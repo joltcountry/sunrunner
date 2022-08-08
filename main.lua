@@ -8,6 +8,7 @@ function love.load()
 	font48 = love.graphics.newFont(48)
 	font32 = love.graphics.newFont(32)
 	font18 = love.graphics.newFont(18)
+	font12 = love.graphics.newFont(12)
 	math.randomseed(os.time())
     love.window.setMode(1920,1080);
 	love.graphics.setBackgroundColor(.05, .05, .05)
@@ -16,16 +17,6 @@ function love.load()
 	objects = {}
 
     TITLE = 'Sunrunner'
-
-    sol = SolarSystem:new('Lovetrade')
-
-    for i=1, 8 do 
-        newPlanet = Planet:new('Planet'..i)
-        newPlanet.distanceFromSun = i+3
-        sol:addPlanet(newPlanet)
-    end
-
-    Scenes.solarSystem.solarSystem = sol
 
 end
 
@@ -37,8 +28,10 @@ function love.draw()
 end
 
 function love.update( dt )
-    for i,v in ipairs(sol.planets) do
-        v.directionFromSun = v.directionFromSun + v.orbitSpeed * dt / 5
+    if gamestate.scene == Scenes.solarSystem then 
+        for i,v in ipairs(sol.planets) do
+            v.directionFromSun = v.directionFromSun + v.orbitSpeed * dt / 5
+        end
     end
 end
 

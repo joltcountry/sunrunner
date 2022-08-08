@@ -22,6 +22,17 @@ end)
 
 local newGameButton = Button:new('New Game', 850, 500, function()
     gamestate.scene = Scenes.solarSystem
+
+    sol = SolarSystem:new('Lovetrade')
+print(#sol.planets)
+    for i=1, 8 do 
+        newPlanet = Planet:new('Planet'..i)
+        newPlanet.distanceFromSun = i+3
+        sol:addPlanet(newPlanet)
+    end
+
+    Scenes.solarSystem.solarSystem = sol
+    gamestate.shipLocation = nil
 end)
 
 local exitButton = Button:new('Exit Game', 850, 600, function()

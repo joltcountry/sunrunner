@@ -1,11 +1,10 @@
-SolarSystem = {
-    planets = {}
-}
+SolarSystem = {}
 SolarSystem.__index = SolarSystem
 
 function SolarSystem:new(name)
     o = {}
     o.name = name
+    o.planets = {}
     setmetatable(o, self)
     return o
 end

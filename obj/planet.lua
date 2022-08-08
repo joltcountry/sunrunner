@@ -5,7 +5,7 @@ function Planet:new(name)
     o = {}
     setmetatable(o, self)
     o.size = math.floor(math.random(8) + 5)
-    o.orbitSpeed = math.random(15) + 5
+    o.orbitSpeed = math.random(50) + 5
     o.distanceFromSun = math.random(2,10)
     o.directionFromSun = math.random(0, 359)
     o.color = { math.random(), math.random(), math.random() }
@@ -32,6 +32,17 @@ function Planet:draw()
         love.graphics.setFont(font18);
         love.graphics.setColor(.8, 1, 1);
         love.graphics.print(self.name, x-30, y+30)
+        if gamestate.shipLocation and gamestate.shipLocation ~= self then
+            local travelDistance = math.floor(getDistance(gamestate.shipLocation:x(), gamestate.shipLocation:y(), x, y));
+            love.graphics.setColor(.4, 0, .2)
+            love.graphics.line(gamestate.shipLocation:x(), gamestate.shipLocation:y(), x, y);
+            love.graphics.setFont(font12)
+            love.graphics.setColor(.7, 1, .7)
+            love.graphics.print(travelDistance..'au', 
+                gamestate.shipLocation:x() + ((x - gamestate.shipLocation:x()) / 2),
+                gamestate.shipLocation:y() + ((y - gamestate.shipLocation:y()) / 2)
+            )
+        end
     end
 
     if gamestate.shipLocation == self then
