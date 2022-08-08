@@ -11,7 +11,7 @@ function love.load()
 	font12 = love.graphics.newFont(12)
 	math.randomseed(os.time())
     love.window.setMode(1920,1080);
-	love.graphics.setBackgroundColor(.05, .05, .05)
+	love.graphics.setBackgroundColor(.1, .1, .1)
 	love.window.setTitle('Sunrunner')
 	gamestate = { scene = Scenes.mainMenu }
 	objects = {}

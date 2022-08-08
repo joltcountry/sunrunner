@@ -16,7 +16,7 @@ end
 function Planet:draw()
     x = self:x()
     y = self:y()
-    love.graphics.setColor(.1, .1, .2)
+    love.graphics.setColor(.2, .2, .2)
     d = getDistance(love.graphics.getWidth()/2, love.graphics.getHeight()/2, x, y);
     love.graphics.circle('line', love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, d);
 

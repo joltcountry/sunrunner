@@ -24,7 +24,7 @@ local newGameButton = Button:new('New Game', 850, 500, function()
     gamestate.scene = Scenes.solarSystem
 
     sol = SolarSystem:new('Lovetrade')
-print(#sol.planets)
+
     for i=1, 8 do 
         newPlanet = Planet:new('Planet'..i)
         newPlanet.distanceFromSun = i+3
