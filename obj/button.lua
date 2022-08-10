@@ -2,7 +2,7 @@ Button = {}
 Button.__index = Button
 
 function Button:new(text, x, y, func)
-    o = {}
+    local o = {}
     setmetatable(o, self)
     o.text = text
     o.x = x

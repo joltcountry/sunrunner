@@ -2,7 +2,7 @@ Scene = {}
 Scene.__index = Scene
 
 function Scene:new(o)
-    o = o or {}
+    local o = o or {}
     setmetatable(o, self)
     o.buttons = {}
     return o

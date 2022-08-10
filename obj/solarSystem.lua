@@ -2,7 +2,7 @@ SolarSystem = {}
 SolarSystem.__index = SolarSystem
 
 function SolarSystem:new(name)
-    o = {}
+    local o = {}
     o.name = name
     o.planets = {}
     setmetatable(o, self)

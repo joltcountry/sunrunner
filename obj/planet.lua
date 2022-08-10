@@ -1,8 +1,11 @@
+require('goods')
+require('obj.inventory')
+
 Planet = {}
 Planet.__index = Planet
 
 function Planet:new(name)
-    o = {}
+    local o = {}
     setmetatable(o, self)
     o.size = math.floor(math.random(8) + 5)
     o.orbitSpeed = math.random(50) + 5
@@ -10,6 +13,10 @@ function Planet:new(name)
     o.directionFromSun = math.random(0, 359)
     o.color = { math.random(), math.random(), math.random() }
     o.name = name
+    o.inventoryList = {}
+    for k,v in pairs(Goods) do
+        table.insert(o.inventoryList, Inventory:generate(v))
+    end
     return o
 end
 
@@ -60,4 +67,4 @@ end
 
 function Planet:y()
     return love.graphics.getHeight() / 2 + math.sin(math.rad(self.directionFromSun)) * self.distanceFromSun * 40
-end    
+end

@@ -48,6 +48,10 @@ function dockedScene:draw()
     love.graphics.setColor(.5,.9, .5)
     if self.planet then
         love.graphics.printf("Docked at: "..self.planet.name, 10, 10, love.graphics.getWidth(), 'center');
+        for i = 1,#self.planet.inventoryList do
+            love.graphics.setColor(.8, .6, .6);
+            love.graphics.print(self.planet.inventoryList[i]:__tostring(), 600, 100 + (i*80))
+        end
     else
         love.graphics.printf("Not currently docked.", 10, 10, love.graphics.getWidth(), 'center');
     end
