@@ -1,45 +1,56 @@
-require 'obj.planet'
-require 'obj.solarSystem'
-require 'utils'
-require 'scenes'
+require "scenes.galaxy"
+require "scenes.solar"
+require "obj.ship"
+
+local scenes = {
+    galaxy = GalaxyScene,
+    solar = SolarScene
+}
 
 function love.load()
 
-	font48 = love.graphics.newFont(48)
-	font32 = love.graphics.newFont(32)
-	font18 = love.graphics.newFont(18)
-	font12 = love.graphics.newFont(12)
-	math.randomseed(os.time())
-    love.window.setMode(1920,1080);
-	love.graphics.setBackgroundColor(.1, .1, .1)
-	love.window.setTitle('Sunrunner')
-	gamestate = { scene = Scenes.mainMenu }
-	objects = {}
+    game = {}
+    planetImages = {}
+    for i = 1,10 do
+        planetImages[i] = love.graphics.newImage("assets/images/planets/planet" .. i .. ".png")
+    end
 
-    TITLE = 'Sunrunner'
+    math.randomseed(os.time())
+    love.window.setMode(1600, 900)
+	width = love.graphics.getWidth()
+	height = love.graphics.getHeight()
+    bigfont = love.graphics.newFont(36)
+    smallfont = love.graphics.newFont(12)
+    zoom = 1
+    lastClick = 0
+    clickInterval = .2
 
+    GalaxyScene:init(10000)
+    GalaxyScene:load()
+
+    _, inRangeStars = galaxy:starsInRange(0, 0, 200)
+
+    game.myship = Ship:new(inRangeStars[math.random(1, #inRangeStars)].id)
+    print("Ship is at " .. game.myship.loc)
+
+end
+
+function love.update(dt)
+    scenes[scene]:update(dt)
 end
 
 function love.draw()
-
-    gamestate.scene:draw();
-    gamestate.scene:drawButtons();
-
+    scenes[scene]:draw()
 end
 
-function love.update( dt )
-    if gamestate.scene == Scenes.solarSystem then 
-        for i,v in ipairs(sol.planets) do
-            v.directionFromSun = v.directionFromSun + v.orbitSpeed * dt / 5
-        end
-    end
+function love.wheelmoved(x, y)
+    scenes[scene]:wheelmoved(x,y)
 end
 
-function love.mousepressed(x, y, i)
-    if (gamestate.scene.mousepressed) then
-        gamestate.scene:mousepressed(x, y, i)
-    end
-    for i,v in ipairs(gamestate.scene.buttons) do
-        v:mousepressed(x, y, i)
-    end
+function love.mousepressed(x, y, button)
+    scenes[scene]:mousepressed(x,y,button)
+end
+
+function love.keypressed(key, scancode, isrepeat)
+    scenes[scene]:keypressed(key, scancode, isrepeat)
 end

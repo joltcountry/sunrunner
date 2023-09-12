@@ -1,19 +1,30 @@
 Scene = {}
-Scene.__index = Scene
 
-function Scene:new(o)
-    local o = o or {}
+function Scene:new()
+    local o = {}
+
     setmetatable(o, self)
-    o.buttons = {}
+    self.__index = self
     return o
 end
 
-function Scene:addButton(b)
-    table.insert(self.buttons, b);
+function Scene:init()
 end
 
-function Scene:drawButtons()
-    for k,v in pairs(self.buttons) do
-        v:draw()
-    end
+function Scene:load()
+end
+
+function Scene:update(dt)
+end
+
+function Scene:draw()
+end
+
+function Scene:mousepressed(x,y,button)
+end
+
+function Scene:wheelmoved(x,y)
+end
+
+function Scene:keypressed(key, scancode, isrepeat)
 end
