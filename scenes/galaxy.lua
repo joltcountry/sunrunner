@@ -6,10 +6,9 @@ GalaxyScene = Scene:new()
 
 function GalaxyScene:init(numOfStars)
     galaxy = Galaxy:new(numOfStars)
-    range = 20
     galaxyx = width/2
     galaxyy = height/2
-    sunsize = 40
+    sunsize = 20
 end
 
 function GalaxyScene:load()
@@ -85,6 +84,14 @@ function GalaxyScene:update(dt)
         oldy = nil
     end
 
+    if selected and selected ~= game.myship.loc and getDistance(galaxy.stars[game.myship.loc].x, galaxy.stars[game.myship.loc].y, galaxy.stars[selected].x, galaxy.stars[selected].y) <= game.myship.plottingRange then
+        if not game.plottedRoutes[selected] then
+            route = {}
+            galaxy:plotRoute(game.myship.loc, selected, route)
+            game.plottedRoutes[selected] = route
+        end
+    end
+
 end
 
 function GalaxyScene:draw()
@@ -98,23 +105,27 @@ function GalaxyScene:draw()
     end
 
     -- TODO: This is terrible
+    love.graphics.setColor(.1,0,.1)
+    love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.plottingRange * zoom);
+    love.graphics.setColor(.2,0,.2)
+    love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.plottingRange * zoom);
     if (game.myship.travelRange < game.myship.scanningRange) then
-        love.graphics.setColor(0,.1,0)
-        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
-        love.graphics.setColor(0,.4,0)
-        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
         love.graphics.setColor(0,0,.1)
-        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
+        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
         love.graphics.setColor(0,0,.4)
+        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
+        love.graphics.setColor(0,.1,0)
+        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
+        love.graphics.setColor(0,.4,0)
         love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
     else
-        love.graphics.setColor(0,0,.1)
-        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
-        love.graphics.setColor(0,0,.4)
-        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
         love.graphics.setColor(0,.1,0)
-        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
+        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
         love.graphics.setColor(0,.4,0)
+        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
+        love.graphics.setColor(0,0,.1)
+        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
+        love.graphics.setColor(0,0,.4)
         love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
     end
 
@@ -146,29 +157,10 @@ function GalaxyScene:draw()
             --love.graphics.print(i, screenX, screenY+9)
         end
     
-        if selected and selected ~= game.myship.loc then
-            if not game.plottedRoutes[selected] then
-                route = {}
-                galaxy:plotRoute(game.myship.loc, selected, route)
-                game.plottedRoutes[selected] = route
-            end
-            -- draw plotted route
-            love.graphics.setLineWidth(2);
-            love.graphics.setColor(math.random(), math.random(), 1)
-
-            for node = 1, #game.plottedRoutes[selected] - 1 do
-                fromX = galaxyx + galaxy.stars[game.plottedRoutes[selected][node]].x * zoom
-                fromY = galaxyy + galaxy.stars[game.plottedRoutes[selected][node]].y * zoom
-                toX = galaxyx + galaxy.stars[game.plottedRoutes[selected][node+1]].x * zoom
-                toY = galaxyy + galaxy.stars[game.plottedRoutes[selected][node+1]].y * zoom
-                love.graphics.line(fromX, fromY, toX, toY)
-            end
-        end
-
         -- Draw possible travel routes
         if inRange[i] then
             if hovered == i then
-                love.graphics.setLineWidth(2);
+                love.graphics.setLineWidth(1);
                 love.graphics.setColor(math.random(), math.random(), 1)
                 love.graphics.line(screenX, screenY, shipScreenX, shipScreenY)
             end
@@ -188,15 +180,37 @@ function GalaxyScene:draw()
 
     end
 
+    if selected and selected ~= game.myship.loc then
+
+        -- draw plotted route
+        love.graphics.setLineWidth(1);
+        love.graphics.setColor(math.random(), math.random(), 1)
+
+        if game.plottedRoutes[selected] then
+            if #game.plottedRoutes[selected] > 1 then
+                for node = 1, #game.plottedRoutes[selected] - 1 do
+                    fromX = galaxyx + galaxy.stars[game.plottedRoutes[selected][node]].x * zoom
+                    fromY = galaxyy + galaxy.stars[game.plottedRoutes[selected][node]].y * zoom
+                    toX = galaxyx + galaxy.stars[game.plottedRoutes[selected][node+1]].x * zoom
+                    toY = galaxyy + galaxy.stars[game.plottedRoutes[selected][node+1]].y * zoom
+                    love.graphics.line(fromX, fromY, toX, toY)
+                end
+            else
+                love.graphics.setColor(.7, 0, 0)
+                love.graphics.circle('line', selectedScreenX, selectedScreenY, galaxy.spacing * zoom)
+            end
+        end
+    end
+    
     -- draw the black hole in the middle
     rings = 10 + sunsize / 3
     enhancer = 0.01 + (math.random() * 0.04 / (sunsize / 5))
     for i = rings, 1, -1 do
         love.graphics.setColor(0/i + enhancer * (rings-i), 1/i + enhancer * (rings-i), 0/i + enhancer * (rings-i))
         love.graphics.circle('fill', galaxyx, galaxyy, sunsize + i)
-        love.graphics.setColor(0,0,0)
-        love.graphics.circle('fill', galaxyx, galaxyy, sunsize - 1)
     end
+    love.graphics.setColor(0,0,0)
+    love.graphics.circle('fill', galaxyx, galaxyy, sunsize - 1)
 
 end
 

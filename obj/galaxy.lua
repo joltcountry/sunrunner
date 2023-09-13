@@ -99,12 +99,27 @@ function Galaxy:plotRoute(start, target, route, failures)
         end
     end
     
-    -- sort candidates by dist
+    -- sort candidates by dist to target
     table.sort(candidates, function (c1, c2) return c1.dist < c2.dist end )
 
     for _,v in pairs(candidates) do
         route[#route+1] = v.star
         if v.star == target then
+
+            -- snip scenic routes
+            for i = 1, #route do
+                for j = #route, i+2, -1 do
+                    if getDistance(self.stars[route[i]].x, self.stars[route[i]].y, self.stars[route[j]].x, self.stars[route[j]].y) <= game.myship.travelRange then
+                        print("snipping from " .. i .. " to " .. j)
+                        for x = i+1, j do
+                            table.remove(route, i+1)
+                        end
+                        goto next
+                    end
+                end
+                ::next::
+            end
+
             return true
         else
             local success = self:plotRoute(v.star, target, route, failures)
