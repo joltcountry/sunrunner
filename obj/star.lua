@@ -23,7 +23,6 @@ function Star:build()
     self.planets = {}
     local numOfPlanets = math.random(1,9)
     local dice = math.random(1,9)
-    print ("try: " .. numOfPlanets .. ", die: " .. dice)
     if dice >= numOfPlanets then
         local orbits = {1,2,3,4,5,6,7,8,9}
         for i = 1, numOfPlanets do

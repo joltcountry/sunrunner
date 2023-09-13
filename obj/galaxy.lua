@@ -73,3 +73,48 @@ function Galaxy:starsInRange(x, y, range)
     end
     return inRange, stars
 end
+
+function Galaxy:plotRoute(start, target, route, failures)
+    failures = failures or {}
+    if #route == 0 then route[1] = start end
+    previousCandidates = previousCandidates or {}
+    local startX = self.stars[start].x
+    local startY = self.stars[start].y
+    local targetX = self.stars[target].x
+    local targetY = self.stars[target].y
+    local candidates = {}
+
+    -- TODO clean this up to reuse "starsInRange"
+    for i, v in ipairs(self.stars) do
+        local dist = getDistance(startX, startY, v.x, v.y)
+        if dist <= game.myship.travelRange then
+            for j, w in pairs(route) do
+                if (i == w) then goto skip end
+            end
+            for j, w in pairs(failures) do
+                if (i == w) then goto skip end
+            end
+            candidates[#candidates+1] = {star = i, dist = getDistance(v.x, v.y, targetX, targetY)}
+            ::skip::
+        end
+    end
+    
+    -- sort candidates by dist
+    table.sort(candidates, function (c1, c2) return c1.dist < c2.dist end )
+
+    for _,v in pairs(candidates) do
+        route[#route+1] = v.star
+        if v.star == target then
+            return true
+        else
+            local success = self:plotRoute(v.star, target, route, failures)
+            if success then
+                return true
+            else
+                route[#route] = nil
+                failures[#failures + 1] = v.star
+            end
+        end
+    end 
+    return false
+end

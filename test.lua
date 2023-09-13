@@ -1,0 +1,10 @@
+a = {'a', 'b', 'c', 'd', 'e', 'f'}
+print (#a)
+print(a[2])
+table.remove(a, 2)
+print(a[2])
+table.remove(a, 2)
+print(a[2])
+table.remove(a, 2)
+print(a[2])
+print (#a)

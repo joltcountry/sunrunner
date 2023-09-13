@@ -14,7 +14,6 @@ end
 
 function GalaxyScene:load()
     scene = "galaxy"
-    selected = nil
 end
 
 function GalaxyScene:update(dt)
@@ -22,8 +21,10 @@ function GalaxyScene:update(dt)
     displayed = {}
 
     inRange = {}
+    inScanningRange = {}
     shipX, shipY = galaxy:getLocation(game.myship.loc)
-    inRange = galaxy:starsInRange(shipX, shipY, range)
+    inRange = galaxy:starsInRange(shipX, shipY, game.myship.travelRange)
+    inScanningRange = galaxy:starsInRange(shipX, shipY, game.myship.scanningRange)
 
     -- Determine which ones are likely to displayed, dispense with the rest
     local selectedDisplayed = false
@@ -43,7 +44,7 @@ function GalaxyScene:update(dt)
         end
 
         -- auto explore
-        if not v.built and inRange[i] then
+        if not v.built and inScanningRange[i] then
             v:build()
         end
 
@@ -96,6 +97,27 @@ function GalaxyScene:draw()
         selectedScreenY = galaxyy + galaxy.stars[selected].y * zoom
     end
 
+    -- TODO: This is terrible
+    if (game.myship.travelRange < game.myship.scanningRange) then
+        love.graphics.setColor(0,.1,0)
+        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
+        love.graphics.setColor(0,.4,0)
+        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
+        love.graphics.setColor(0,0,.1)
+        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
+        love.graphics.setColor(0,0,.4)
+        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
+    else
+        love.graphics.setColor(0,0,.1)
+        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
+        love.graphics.setColor(0,0,.4)
+        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
+        love.graphics.setColor(0,.1,0)
+        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
+        love.graphics.setColor(0,.4,0)
+        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
+    end
+
     for i,v in pairs(displayed) do
         local size = 1 + zoom * .2
         local screenX = galaxyx + v.x * zoom
@@ -107,39 +129,55 @@ function GalaxyScene:draw()
         if selected == i then
             love.graphics.setFont(smallfont)
             love.graphics.setColor(1, 1, 0)
-            if v.built then 
+            if v.built and zoom > 3 then 
                 love.graphics.print(i .. ":" .. #v.planets .. "/" .. v:moonCount(), screenX-25, screenY+9)
             end
             love.graphics.circle('line', screenX, screenY, galaxy.spacing * zoom)
         elseif hovered == i then
             love.graphics.setFont(smallfont)
             love.graphics.setColor(.5, 1, .5)
-            if v.built then 
+            if v.built and zoom > 3 then 
                 love.graphics.print(i .. ":" .. #v.planets .. "/" .. v:moonCount(), screenX-25, screenY+9)
             end
-            love.graphics.circle('line', screenX, screenY, galaxy.spacing * zoom)
-        elseif v.built then 
+            love.graphics.circle('line', screenX, screenY, galaxy.spacing * zoom)                
+        elseif v.built and zoom > 3 then 
+ --       else
             love.graphics.print(i .. ":" .. #v.planets .. "/" .. v:moonCount(), screenX-25, screenY+9)
+            --love.graphics.print(i, screenX, screenY+9)
         end
     
+        if selected and selected ~= game.myship.loc then
+            if not game.plottedRoutes[selected] then
+                route = {}
+                galaxy:plotRoute(game.myship.loc, selected, route)
+                game.plottedRoutes[selected] = route
+            end
+            -- draw plotted route
+            love.graphics.setLineWidth(2);
+            love.graphics.setColor(math.random(), math.random(), 1)
+
+            for node = 1, #game.plottedRoutes[selected] - 1 do
+                fromX = galaxyx + galaxy.stars[game.plottedRoutes[selected][node]].x * zoom
+                fromY = galaxyy + galaxy.stars[game.plottedRoutes[selected][node]].y * zoom
+                toX = galaxyx + galaxy.stars[game.plottedRoutes[selected][node+1]].x * zoom
+                toY = galaxyy + galaxy.stars[game.plottedRoutes[selected][node+1]].y * zoom
+                love.graphics.line(fromX, fromY, toX, toY)
+            end
+        end
+
         -- Draw possible travel routes
         if inRange[i] then
             if hovered == i then
                 love.graphics.setLineWidth(2);
                 love.graphics.setColor(math.random(), math.random(), 1)
                 love.graphics.line(screenX, screenY, shipScreenX, shipScreenY)
-            else
-                love.graphics.setLineWidth(1);
-                love.graphics.setColor(.5, 1, .5)
-                dashedLine(screenX, screenY, shipScreenX, shipScreenY)
             end
         end
 
         -- Draw ship
         if game.myship.loc == i then
-            love.graphics.setColor(.5, .5, 1)
-            love.graphics.setLineWidth(2)
-            love.graphics.rectangle("fill", screenX + 3 * zoom / 2, screenY -3 * zoom / 2, 5 * zoom , 2 * zoom)
+            love.graphics.setColor(1,1,1)
+            love.graphics.draw(game.myship.image, screenX+2, screenY-2, 0, zoom / 30)
         end
 
         -- Render the actual star
@@ -178,9 +216,9 @@ function GalaxyScene:mousepressed(x,y,button)
                 end
                 lastClick = time
                 goto continue
-            elseif button == 2 then
+            elseif button == 2 and inRange[i] then
                 selected = i
-                game.myship.loc = i 
+                game.myship:moveTo(i)
                 SolarScene:load()
                 goto continue
             end

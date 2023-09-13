@@ -155,8 +155,8 @@ function SolarScene:draw()
     end
 
     if game.myship.loc == star.id then
-        love.graphics.setColor(.5, .5, 1)
-        love.graphics.rectangle("fill", 200,700, 200, 100)
+        love.graphics.setColor(1,1,1)
+        love.graphics.draw(game.myship.image, 200, 700)
     end
 
     

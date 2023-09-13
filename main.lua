@@ -31,8 +31,8 @@ function love.load()
     _, inRangeStars = galaxy:starsInRange(0, 0, 200)
 
     game.myship = Ship:new(inRangeStars[math.random(1, #inRangeStars)].id)
-    print("Ship is at " .. game.myship.loc)
-
+    game.plottedRoutes = {}
+    
 end
 
 function love.update(dt)
