@@ -22,18 +22,16 @@ function love.load()
 	height = love.graphics.getHeight()
     bigfont = love.graphics.newFont(36)
     smallfont = love.graphics.newFont(12)
-    zoom = 1
+    zoom = 30
     lastClick = 0
     clickInterval = .2
 
     GalaxyScene:init(10000)
-    GalaxyScene:load()
-
     _, inRangeStars = galaxy:starsInRange(0, 0, 200)
-
     game.myship = Ship:new(inRangeStars[math.random(1, #inRangeStars)].id)
     game.plottedRoutes = {}
-    
+    GalaxyScene:load()
+
 end
 
 function love.update(dt)
@@ -43,7 +41,7 @@ end
 function love.draw()
     scenes[scene]:draw()
     love.graphics.setColor(1,1,1)
-    love.graphics.draw(logo, 4, 4, 0, .4)
+    love.graphics.draw(logo, 1, 1, 0, .4)
 end
 
 function love.wheelmoved(x, y)

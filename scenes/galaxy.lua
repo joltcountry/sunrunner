@@ -8,11 +8,19 @@ function GalaxyScene:init(numOfStars)
     galaxy = Galaxy:new(numOfStars)
     galaxyx = width/2
     galaxyy = height/2
-    sunsize = 20
+    sunsize = 40
+end
+
+function GalaxyScene:centerOn(loc)
+    local x = galaxy.stars[loc].x
+    local y = galaxy.stars[loc].y 
+    galaxyx = -x * zoom + width/2
+    galaxyy = -y * zoom + height/2
 end
 
 function GalaxyScene:load()
     scene = "galaxy"
+    self:centerOn(game.myship.loc)
 end
 
 function GalaxyScene:update(dt)
@@ -203,14 +211,15 @@ function GalaxyScene:draw()
     end
     
     -- draw the black hole in the middle
-    rings = 10 + sunsize / 3
-    enhancer = 0.01 + (math.random() * 0.04 / (sunsize / 5))
+    rings = math.max(20 * zoom / 3, .1)
+    enhancer = math.random()
+    
     for i = rings, 1, -1 do
-        love.graphics.setColor(0/i + enhancer * (rings-i), 1/i + enhancer * (rings-i), 0/i + enhancer * (rings-i))
-        love.graphics.circle('fill', galaxyx, galaxyy, sunsize + i)
+        love.graphics.setColor(enhancer * (1-i/rings), 1-i/rings,enhancer * (1-i/rings))
+        love.graphics.circle('fill', galaxyx, galaxyy, sunsize * zoom + i)
     end
     love.graphics.setColor(0,0,0)
-    love.graphics.circle('fill', galaxyx, galaxyy, sunsize - 1)
+    love.graphics.circle('fill', galaxyx, galaxyy, sunsize * zoom)
 
 end
 
@@ -249,14 +258,12 @@ function GalaxyScene:wheelmoved(x,y)
 
     -- Update zoom level
     updateZoom = 1
-    if (y > 0 and zoom < 20) then
+    if (y > 0 and zoom < 30) then
         updateZoom = 1.20
         zoom = zoom * 1.2
-        sunsize = sunsize * 1.2
     elseif (y < 0 and zoom > .5) then
         updateZoom = .8
         zoom = zoom * .8
-        sunsize = sunsize * .8
     end
     
     -- Zoom to cursor
