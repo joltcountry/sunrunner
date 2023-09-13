@@ -14,6 +14,7 @@ function love.load()
     for i = 1,10 do
         planetImages[i] = love.graphics.newImage("assets/images/planets/planet" .. i .. ".png")
     end
+    logo = love.graphics.newImage("assets/images/logo.png")
 
     math.randomseed(os.time())
     love.window.setMode(1600, 900)
@@ -41,6 +42,8 @@ end
 
 function love.draw()
     scenes[scene]:draw()
+    love.graphics.setColor(1,1,1)
+    love.graphics.draw(logo, 4, 4, 0, .4)
 end
 
 function love.wheelmoved(x, y)
