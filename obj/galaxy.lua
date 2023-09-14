@@ -94,6 +94,8 @@ function Galaxy:plotRoute(start, target, route, failures)
             for j, w in pairs(failures) do
                 if (i == w) then goto skip end
             end
+            local distFromShip = getDistance(galaxy.stars[game.myship.loc].x, galaxy.stars[game.myship.loc].y, v.x, v.y)
+            if distFromShip > game.myship.plottingRange then goto skip end
             candidates[#candidates+1] = {star = i, dist = getDistance(v.x, v.y, targetX, targetY)}
             ::skip::
         end

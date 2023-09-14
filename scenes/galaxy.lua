@@ -241,8 +241,12 @@ function GalaxyScene:mousepressed(x,y,button)
                 goto continue
             elseif button == 2 and inRange[i] then
                 selected = i
-                game.myship:moveTo(i)
-                SolarScene:load()
+                if i ~= game.myship.loc then
+                    WarpScene:load()
+                    game.myship:moveTo(i)
+                else 
+                    SolarScene.load()
+                end
                 goto continue
             end
         end

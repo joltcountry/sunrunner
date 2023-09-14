@@ -1,10 +1,12 @@
 require "scenes.galaxy"
 require "scenes.solar"
+require "scenes.warp"
 require "obj.ship"
 
 local scenes = {
     galaxy = GalaxyScene,
-    solar = SolarScene
+    solar = SolarScene,
+    warp = WarpScene
 }
 
 function love.load()
@@ -16,7 +18,9 @@ function love.load()
     end
     logo = love.graphics.newImage("assets/images/logo.png")
 
-    math.randomseed(os.time())
+    local seedTime = os.time()
+    print("seed: " .. seedTime)
+    math.randomseed(seedTime)
     love.window.setMode(1600, 900)
 	width = love.graphics.getWidth()
 	height = love.graphics.getHeight()

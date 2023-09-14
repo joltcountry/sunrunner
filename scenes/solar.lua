@@ -7,6 +7,7 @@ local star, planetDirs, hovered
 
 function SolarScene:load()
 
+    hovered = nil
     star = galaxy.stars[selected]
     scene = "solar"
     sceneryStars = {}
@@ -73,15 +74,8 @@ function SolarScene:draw()
     end
 
     -- Draw star
-    rings = 10 + star.size / 3
-    enhancer = 0.01 + (math.random() * 0.04 / (star.size / 5))
-    for i = rings, 1, -1 do
-        love.graphics.setColor(star.color1[1]/i + enhancer * (rings-i), star.color1[2]/i + enhancer * (rings-i), star.color1[3]/i + enhancer * (rings-i))
-        love.graphics.circle('fill', width / 2, height / 2, star.size + i)
-        love.graphics.setColor(star.color2[1],star.color2[2],star.color2[3])
-        love.graphics.circle('fill', width / 2, height / 2, star.size - 1)
-    end
-
+    star:draw()
+    
     if star.built then
         -- Draw planets
         for i = 1, #star.planets do

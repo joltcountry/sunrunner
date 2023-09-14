@@ -47,6 +47,18 @@ function Star:build()
     self.built = true
 end
 
+function Star:draw(scale, rings)
+    scale = scale or 1
+    rings = rings or 10 + self.size / 3
+    enhancer = 0.01 + (math.random() * 0.04 / (self.size * scale / 5))
+    for i = rings, 1, -1 do
+        love.graphics.setColor(self.color1[1]/i + enhancer * (rings-i), self.color1[2]/i + enhancer * (rings-i), self.color1[3]/i + enhancer * (rings-i))
+        love.graphics.circle('fill', width / 2, height / 2, self.size * scale + i)
+        love.graphics.setColor(self.color2[1],self.color2[2],self.color2[3])
+        love.graphics.circle('fill', width / 2, height / 2, self.size * scale - 1)
+    end
+end
+
 function Star:moonCount()
     local moonCount = 0
     for _, v in ipairs(self.planets) do
