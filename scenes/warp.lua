@@ -64,7 +64,7 @@ function WarpScene:draw()
 
     love.graphics.setColor(math.random(), math.random(), 1)
     love.graphics.setFont(bigfont);
-    local message = "Warping to " .. _to
+    local message = "Warping to " .. galaxy.stars[_to].name
     love.graphics.print(message, width / 2 - bigfont:getWidth(message) / 2, 10)
 
     galaxy.stars[_to]:draw(math.min(timer / length, 1))

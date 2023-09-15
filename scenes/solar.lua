@@ -87,6 +87,7 @@ function SolarScene:draw()
                 love.graphics.setLineWidth(40)
                 love.graphics.circle('line', width/2, height/2, radius)
             else
+                love.graphics.setLineWidth(1)
                 love.graphics.setColor(.1, .1, .1)
                 love.graphics.circle('line', width/2, height/2, radius)
             end
@@ -115,7 +116,7 @@ function SolarScene:draw()
     love.graphics.setFont(bigfont)
     love.graphics.setColor(1, .5, 0)
     if star.built then
-        message = "Star #" .. star.id
+        message = star.name
     else
         message = "Unexplored"
     end

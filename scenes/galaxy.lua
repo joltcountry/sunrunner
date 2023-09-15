@@ -126,13 +126,13 @@ function GalaxyScene:draw()
             love.graphics.setFont(smallfont)
             love.graphics.setColor(.5, 1, .5)
             if v.built and zoom > 5 then 
-                love.graphics.print(i .. ":" .. #v.planets .. "/" .. v:moonCount(), screenX-25, screenY+9)
+                love.graphics.print(galaxy.stars[i].name, screenX-smallfont:getWidth(galaxy.stars[i].name) / 2, screenY+.8*zoom)
             end
             love.graphics.circle('line', screenX, screenY, galaxy.spacing * zoom)                
         elseif v.built and zoom > 5 then 
  --       else
-            love.graphics.print(i .. ":" .. #v.planets .. "/" .. v:moonCount(), screenX-25, screenY+9)
-            --love.graphics.print(i, screenX, screenY+9)
+            love.graphics.print(galaxy.stars[i].name, screenX-smallfont:getWidth(galaxy.stars[i].name) / 2, screenY+.8*zoom)
+ --love.graphics.print(i, screenX, screenY+9)
         end
     
         -- Draw possible travel routes

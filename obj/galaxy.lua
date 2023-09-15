@@ -3,6 +3,21 @@ require "utils"
 
 Galaxy = {}
 
+local letters = { "aeiouy", "bcdfghklmnprstvwxz" }
+local starNames = {}
+
+function generateStarName()
+    local name = ""
+    local len = math.random(2,9)
+    local vc = math.random(1,2)
+    for i = 1, len do
+        local rand = math.random(1, #letters[vc])
+        name = name .. letters[vc]:sub(rand, rand)
+        vc = 3 - vc
+    end
+    return name
+end
+
 function Galaxy:new(numOfStars, spacing)
     local o = {}
     o.spacing = spacing or 4
@@ -48,7 +63,13 @@ function Galaxy:new(numOfStars, spacing)
             color1 = { math.random(), math.random(), math.random() * .3 + .7 }
             color2 = { .9, .9, 1 }
         end
-        o.stars[n] = Star:new(n, dir, dist, x, y, color1, color2, math.random(10,75)) 
+        local starName
+        repeat
+            starName = generateStarName()
+        until not starNames[starName]
+        starNames[starName] = true
+
+        o.stars[n] = Star:new(n, string.upper(starName), dir, dist, x, y, color1, color2, math.random(10,75)) 
 
     end
 

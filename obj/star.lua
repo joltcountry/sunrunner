@@ -1,9 +1,10 @@
 require "obj.planet"
 Star = {}
 
-function Star:new(id, dir, dist, x, y, color1, color2, size)
+function Star:new(id, name, dir, dist, x, y, color1, color2, size)
     local o = {}
     o.id = id
+    o.name = name
     o.dir = dir
     o.dist = dist
     o.x = x

@@ -32,7 +32,7 @@ function love.load()
     clickInterval = .2
 
     GalaxyScene:init(10000, { AutopilotButton })
-    local _, inRangeStars = galaxy:starsInRange(200, 0, 0)
+    local _, inRangeStars = galaxy:starsInRange(100, 0, 0)
     game.myship = Ship:new(inRangeStars[math.random(1, #inRangeStars)].id)
     game.plottedRoutes = {}
     GalaxyScene:centerOn(game.myship.loc)
