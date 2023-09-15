@@ -19,7 +19,7 @@ function GalaxyScene:centerOn(loc)
 end
 
 function GalaxyScene:load()
-    scene = "galaxy"
+    game.scene = "galaxy"
     --self:centerOn(game.myship.loc)
 end
 
@@ -79,7 +79,7 @@ function GalaxyScene:update(dt)
             oldy = y
         else
             if x ~= oldx or y ~= oldy then
-                if (scene == "galaxy") then
+                if (game.scene == "galaxy") then
                     galaxyx = galaxyx + x - oldx
                     galaxyy = galaxyy + y - oldy
                 end
@@ -176,7 +176,7 @@ function GalaxyScene:draw()
 
     end
 
-    if selected and selected ~= game.myship.loc then
+    if game.myship.route then
 
         -- draw plotted route
         love.graphics.setLineWidth(1);
@@ -223,7 +223,7 @@ function GalaxyScene:mousepressed(x,y,button)
                 selected = i
                 local time = love.timer.getTime()
                 if time < lastClick + clickInterval then
-                    SolarScene:load()
+                    SolarScene:load(selected)
                 end
                 lastClick = time
                 goto continue
@@ -233,7 +233,7 @@ function GalaxyScene:mousepressed(x,y,button)
                     game.myship:moveTo(i)
                     WarpScene:load()
                 else 
-                    SolarScene.load()
+                    SolarScene:load(game.myship.loc)
                 end
                 goto continue
             end

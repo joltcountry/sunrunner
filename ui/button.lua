@@ -17,25 +17,13 @@ function Button:draw()
         local buttonWidth = self.widthpct / 100 * width
         local buttonHeight = self.heightpct / 100 * height
 
-        if self.isClicked then
-            love.graphics.setColor(.5, 1, .5)
-            love.graphics.rectangle("fill", x, y, buttonWidth, buttonHeight)
-            love.graphics.setColor(.5, 1, .5)
-            love.graphics.setLineWidth(3)
-            love.graphics.rectangle("line", x, y, buttonWidth, buttonHeight)
-            love.graphics.setColor(0,0,0)
-            love.graphics.setFont(smallfont)
-            love.graphics.print(self.text, x + buttonWidth / 2 - (smallfont:getWidth(self.text) / 2), y + buttonHeight / 2 - (smallfont:getHeight(self.text) / 2))
-            self.isClicked = nil
-        else
-            love.graphics.setColor(0,0,0)
-            love.graphics.rectangle("fill", x, y, buttonWidth, buttonHeight)
-            love.graphics.setColor(.5, 1, .5)
-            love.graphics.setLineWidth(3)
-            love.graphics.rectangle("line", x, y, buttonWidth, buttonHeight)
-            love.graphics.setFont(smallfont)
-            love.graphics.print(self.text, x + buttonWidth / 2 - (smallfont:getWidth(self.text) / 2), y + buttonHeight / 2 - (smallfont:getHeight(self.text) / 2))
-        end
+        love.graphics.setColor(0,0,0)
+        love.graphics.rectangle("fill", x, y, buttonWidth, buttonHeight)
+        love.graphics.setColor(.5, 1, .5)
+        love.graphics.setLineWidth(3)
+        love.graphics.rectangle("line", x, y, buttonWidth, buttonHeight)
+        love.graphics.setFont(smallfont)
+        love.graphics.print(self.text, x + buttonWidth / 2 - (smallfont:getWidth(self.text) / 2), y + buttonHeight / 2 - (smallfont:getHeight(self.text) / 2))
     end
 end
 

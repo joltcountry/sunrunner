@@ -6,11 +6,11 @@ SolarScene = Scene:new({ AutopilotButton })
 
 local star, planetDirs, hovered
 
-function SolarScene:load()
+function SolarScene:load(loc)
 
     hovered = nil
-    star = galaxy.stars[selected]
-    scene = "solar"
+    star = galaxy.stars[loc]
+    game.scene = "solar"
     sceneryStars = {}
     for i=1,200 do
         primary = math.random(1,3)

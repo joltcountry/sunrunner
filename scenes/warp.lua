@@ -8,7 +8,7 @@ local stars
 local length
 
 function WarpScene:load()
-    scene = "warp"
+    game.scene = "warp"
     timer = 0
     stars = {}
     spinDir = math.random(-5, 5)
@@ -39,7 +39,7 @@ function WarpScene:update(dt)
     end
 
     if #stars == 0 then 
-        SolarScene:load()
+        SolarScene:load(game.myship.loc)
     end
 end
 

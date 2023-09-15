@@ -1,7 +1,7 @@
 require("ui.button")
 require("scenes.warp")
 
-AutopilotButton = Button:new(90, 95, 8, 4, "Autopilot")
+AutopilotButton = Button:new(90, 95, 8, 4, "Next Waypoint")
 
 function AutopilotButton:clicked(button)
     if game.myship.route and button == 1 then

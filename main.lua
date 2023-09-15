@@ -42,13 +42,13 @@ function love.load()
 end
 
 function love.update(dt)
-    scenes[scene]:update(dt)
+    scenes[game.scene]:update(dt)
 end
 
 function love.draw()
-    scenes[scene]:draw()
-    if scenes[scene].ui then
-        for _,v in pairs(scenes[scene].ui) do
+    scenes[game.scene]:draw()
+    if scenes[game.scene].ui then
+        for _,v in pairs(scenes[game.scene].ui) do
             v:draw()
         end
     end
@@ -58,18 +58,18 @@ function love.draw()
 end
 
 function love.wheelmoved(x, y)
-    scenes[scene]:wheelmoved(x,y)
+    scenes[game.scene]:wheelmoved(x,y)
 end
 
 function love.mousepressed(x, y, button)
-    if scenes[scene].ui then
-        for _,v in pairs(scenes[scene].ui) do
+    if scenes[game.scene].ui then
+        for _,v in pairs(scenes[game.scene].ui) do
             v:mousepressed(x, y, button)
         end
     end
-    scenes[scene]:mousepressed(x,y,button)
+    scenes[game.scene]:mousepressed(x,y,button)
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    scenes[scene]:keypressed(key, scancode, isrepeat)
+    scenes[game.scene]:keypressed(key, scancode, isrepeat)
 end

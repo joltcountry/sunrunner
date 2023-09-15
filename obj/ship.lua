@@ -14,7 +14,6 @@ end
 
 function Ship:moveTo(loc)
     self.loc = loc
-    selected = loc
     inScanningRange = galaxy:starsInRange(game.myship.scanningRange, galaxy:xy(game.myship.loc))
     for k,v in pairs(inScanningRange) do
         galaxy.stars[k]:build()
