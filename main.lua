@@ -43,6 +43,11 @@ end
 
 function love.update(dt)
     scenes[game.scene]:update(dt)
+    if scenes[game.scene].ui then
+        for _,v in pairs(scenes[game.scene].ui) do
+            v:update(dt)
+        end
+    end
 end
 
 function love.draw()
@@ -64,12 +69,21 @@ end
 function love.mousepressed(x, y, button)
     if scenes[game.scene].ui then
         for _,v in pairs(scenes[game.scene].ui) do
-            v:mousepressed(x, y, button)
+            local interacted = v:mousepressed(x, y, button)
+            if interacted then goto done end
         end
     end
     scenes[game.scene]:mousepressed(x,y,button)
+    :: done ::
 end
 
 function love.keypressed(key, scancode, isrepeat)
+    if scenes[game.scene].ui then
+        for _,v in pairs(scenes[game.scene].ui) do
+            local interacted = v:keypressed(key, scancode, isrepeat)
+            if interacted then goto done end
+        end
+    end
     scenes[game.scene]:keypressed(key, scancode, isrepeat)
+    :: done ::
 end

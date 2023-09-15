@@ -77,8 +77,8 @@ end
 -- TODO - snipping causes problems sometimes
 -- seed 1694697884 issue
 function Galaxy:plotRoute(start, target, route, failures)
+    route = route or { start }
     failures = failures or {}
-    if #route == 0 then route[1] = start end
     previousCandidates = previousCandidates or {}
     local candidates = {}
 
@@ -117,18 +117,20 @@ function Galaxy:plotRoute(start, target, route, failures)
                 ::next::
             end
 
-            return true
+            return route
         else
-            local success = self:plotRoute(v.star, target, route, failures)
-            if success then
-                return true
+            local route = self:plotRoute(v.star, target, route, failures)
+            if #route > 1 then
+                return route
             else
                 route[#route] = nil
                 failures[#failures + 1] = v.star
             end
         end
     end 
-    return false
+    route = { target }
+    return route
+
 end
 
 function Galaxy:xy(loc)

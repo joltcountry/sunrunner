@@ -2,8 +2,13 @@ require "obj.galaxy"
 require "utils"
 require "obj.scene"
 require "ui.autopilotButton"
+require "ui.cancelRouteButton"
 
-GalaxyScene = Scene:new({ AutopilotButton })
+GalaxyScene = Scene:new({ 
+    AutopilotButton,
+    CancelRouteButton
+ })
+local hovered
 
 function GalaxyScene:init(numOfStars, ui)
     galaxy = Galaxy:new(numOfStars)
@@ -34,9 +39,8 @@ function GalaxyScene:update(dt)
     inScanningRange = galaxy:starsInRange(game.myship.scanningRange, galaxy:xy(game.myship.loc))
 
     -- Determine which ones are likely to displayed, dispense with the rest
-    local selectedDisplayed = false
     for i,v in ipairs(galaxy.stars) do
-        if zoom < 3 then
+        if zoom < 5 then
             v.dir = v.dir + .5 * dt
         end
         v.x = math.sin(math.rad(v.dir)) * v.dist
@@ -45,9 +49,6 @@ function GalaxyScene:update(dt)
         local screenY = galaxyy + v.y * zoom
         if screenX > 0 - width / 2 and screenX < width + width/2 and screenY > 0 - height/2 and screenY < height + height/2 then
             displayed[i] = v
-            if i == selected then
-                selectedDisplayed = true
-            end
         end
 
         -- auto explore
@@ -92,24 +93,11 @@ function GalaxyScene:update(dt)
         oldy = nil
     end
 
-    if selected and selected ~= game.myship.loc and galaxy:getDistance(game.myship.loc, selected) <= game.myship.plottingRange then
-        if not game.plottedRoutes[selected] then
-            route = {}
-            galaxy:plotRoute(game.myship.loc, selected, route)
-            game.plottedRoutes[selected] = route
-            game.myship.route = route
-        end
-    end
-
 end
 
 function GalaxyScene:draw()
 
     shipScreenX, shipScreenY = galaxy:screenPos(game.myship.loc)
-
-    if selected ~= nil then
-        selectedScreenX, selectedScreenY = galaxy:screenPos(selected)
-    end
 
     local ranges = { 
         { dist = game.myship.plottingRange, fillColor = {.1,0,.1}, lineColor = {.2,0,.2} },
@@ -117,6 +105,7 @@ function GalaxyScene:draw()
         { dist = game.myship.travelRange, fillColor = {0,.1,0}, lineColor = {0,.4,0} }
     }
     table.sort(ranges, function (c1, c2) return c1.dist > c2.dist end )
+    love.graphics.setLineWidth(1)
     for _,v in pairs(ranges) do
         love.graphics.setColor(v.fillColor)
         love.graphics.circle("fill", shipScreenX, shipScreenY, v.dist * zoom);
@@ -133,21 +122,14 @@ function GalaxyScene:draw()
     
         -- Show selections or hover indications
         love.graphics.setLineWidth(1);
-        if selected == i then
-            love.graphics.setFont(smallfont)
-            love.graphics.setColor(1, 1, 0)
-            if v.built and zoom > 3 then 
-                love.graphics.print(i .. ":" .. #v.planets .. "/" .. v:moonCount(), screenX-25, screenY+9)
-            end
-            love.graphics.circle('line', screenX, screenY, galaxy.spacing * zoom)
-        elseif hovered == i then
+        if hovered == i then
             love.graphics.setFont(smallfont)
             love.graphics.setColor(.5, 1, .5)
-            if v.built and zoom > 3 then 
+            if v.built and zoom > 5 then 
                 love.graphics.print(i .. ":" .. #v.planets .. "/" .. v:moonCount(), screenX-25, screenY+9)
             end
             love.graphics.circle('line', screenX, screenY, galaxy.spacing * zoom)                
-        elseif v.built and zoom > 3 then 
+        elseif v.built and zoom > 5 then 
  --       else
             love.graphics.print(i .. ":" .. #v.planets .. "/" .. v:moonCount(), screenX-25, screenY+9)
             --love.graphics.print(i, screenX, screenY+9)
@@ -177,24 +159,22 @@ function GalaxyScene:draw()
     end
 
     if game.myship.route then
+        if #game.myship.route > 1 then
+            -- draw plotted route
+            love.graphics.setLineWidth(1);
+            love.graphics.setColor(math.random(), math.random(), 1)
 
-        -- draw plotted route
-        love.graphics.setLineWidth(1);
-        love.graphics.setColor(math.random(), math.random(), 1)
-
-        if game.plottedRoutes[selected] then
-            if #game.plottedRoutes[selected] > 1 then
-                for node = 1, #game.plottedRoutes[selected] - 1 do
-                    fromX = galaxyx + galaxy.stars[game.plottedRoutes[selected][node]].x * zoom
-                    fromY = galaxyy + galaxy.stars[game.plottedRoutes[selected][node]].y * zoom
-                    toX = galaxyx + galaxy.stars[game.plottedRoutes[selected][node+1]].x * zoom
-                    toY = galaxyy + galaxy.stars[game.plottedRoutes[selected][node+1]].y * zoom
-                    love.graphics.line(fromX, fromY, toX, toY)
-                end
-            else
-                love.graphics.setColor(.7, 0, 0)
-                love.graphics.circle('line', selectedScreenX, selectedScreenY, galaxy.spacing * zoom)
+            for node = 1, #game.myship.route - 1 do
+                fromX = galaxyx + galaxy.stars[game.myship.route[node]].x * zoom
+                fromY = galaxyy + galaxy.stars[game.myship.route[node]].y * zoom
+                toX = galaxyx + galaxy.stars[game.myship.route[node+1]].x * zoom
+                toY = galaxyy + galaxy.stars[game.myship.route[node+1]].y * zoom
+                love.graphics.line(fromX, fromY, toX, toY)
             end
+        else
+            failedX, failedY = galaxy:screenPos(game.myship.route[1])
+            love.graphics.setColor(.7, 0, 0)
+            love.graphics.circle('line', failedX, failedY, galaxy.spacing * zoom)
         end
     end
     
@@ -220,27 +200,31 @@ function GalaxyScene:mousepressed(x,y,button)
         local screenY = galaxyy + v.y * zoom
         if x > screenX - size and x < screenX + size and y > screenY - size and y < screenY + size then
             if button == 1 then 
-                selected = i
                 local time = love.timer.getTime()
                 if time < lastClick + clickInterval then
-                    SolarScene:load(selected)
+                    SolarScene:load(hovered)
                 end
                 lastClick = time
                 goto continue
-            elseif button == 2 and inRange[i] then
-                selected = i
-                if i ~= game.myship.loc then
-                    game.myship:moveTo(i)
-                    WarpScene:load()
-                else 
-                    SolarScene:load(game.myship.loc)
+            elseif button == 2 then
+                if inRange[i] then
+                    if i ~= game.myship.loc then
+                        WarpScene:load(game.myship.loc, i)
+                        game.myship.route = nil
+                        game.myship:moveTo(i)
+                    else 
+                        SolarScene:load(game.myship.loc)
+                    end
+                    goto continue
+                else
+                    if not game.plottedRoutes[i] then
+                        local route = galaxy:plotRoute(game.myship.loc, i)
+                        game.plottedRoutes[i] = route
+                    end
+                    game.myship.route = game.plottedRoutes[i]
                 end
-                goto continue
             end
         end
-    end
-    if button == 2 then
-        selected = nil
     end
 
     ::continue::

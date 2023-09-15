@@ -6,13 +6,16 @@ WarpScene = Scene:new()
 local timer
 local stars
 local length
+local _from, _to
 
-function WarpScene:load()
+function WarpScene:load(from, to)
     game.scene = "warp"
+    _from = from
+    _to = to
     timer = 0
     stars = {}
     spinDir = math.random(-5, 5)
-    local dist = galaxy:getDistance(selected, game.myship.loc)
+    local dist = galaxy:getDistance(_from, _to)
     length = math.max(1, math.min(3, dist / (game.myship.travelRange / 3)))
 end
 
@@ -21,7 +24,7 @@ function WarpScene:update(dt)
     if timer < length then
         for i = 1, 10 do
             local dir = math.random(0, 359)
-            local dist = galaxy.stars[selected].size + 30
+            local dist = galaxy.stars[_to].size + 30
             stars[#stars+1] = { dir = dir, x = x, y = y, dist = dist, speed = 1 }
         end
     end
@@ -61,8 +64,8 @@ function WarpScene:draw()
 
     love.graphics.setColor(math.random(), math.random(), 1)
     love.graphics.setFont(bigfont);
-    local message = "Warping to " .. game.myship.loc
+    local message = "Warping to " .. _to
     love.graphics.print(message, width / 2 - bigfont:getWidth(message) / 2, 10)
 
-    galaxy.stars[selected]:draw(math.min(timer / length, 1))
+    galaxy.stars[_to]:draw(math.min(timer / length, 1))
 end

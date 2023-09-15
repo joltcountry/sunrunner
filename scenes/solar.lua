@@ -115,7 +115,7 @@ function SolarScene:draw()
     love.graphics.setFont(bigfont)
     love.graphics.setColor(1, .5, 0)
     if star.built then
-        message = "Star #" ..selected
+        message = "Star #" .. star.id
     else
         message = "Unexplored"
     end
