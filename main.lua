@@ -2,6 +2,7 @@ require "scenes.galaxy"
 require "scenes.solar"
 require "scenes.warp"
 require "obj.ship"
+require "ui.autopilotButton"
 
 local scenes = {
     galaxy = GalaxyScene,
@@ -30,8 +31,8 @@ function love.load()
     lastClick = 0
     clickInterval = .2
 
-    GalaxyScene:init(10000)
-    _, inRangeStars = galaxy:starsInRange(200, 0, 0)
+    GalaxyScene:init(10000, { AutopilotButton })
+    local _, inRangeStars = galaxy:starsInRange(200, 0, 0)
     game.myship = Ship:new(inRangeStars[math.random(1, #inRangeStars)].id)
     game.plottedRoutes = {}
     GalaxyScene:centerOn(game.myship.loc)
@@ -46,6 +47,12 @@ end
 
 function love.draw()
     scenes[scene]:draw()
+    if scenes[scene].ui then
+        for _,v in pairs(scenes[scene].ui) do
+            v:draw()
+        end
+    end
+
     love.graphics.setColor(1,1,1)
     love.graphics.draw(logo, 1, 1, 0, .4)
 end
@@ -55,6 +62,11 @@ function love.wheelmoved(x, y)
 end
 
 function love.mousepressed(x, y, button)
+    if scenes[scene].ui then
+        for _,v in pairs(scenes[scene].ui) do
+            v:mousepressed(x, y, button)
+        end
+    end
     scenes[scene]:mousepressed(x,y,button)
 end
 

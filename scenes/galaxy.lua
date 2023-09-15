@@ -1,10 +1,11 @@
 require "obj.galaxy"
 require "utils"
 require "obj.scene"
+require "ui.autopilotButton"
 
-GalaxyScene = Scene:new()
+GalaxyScene = Scene:new({ AutopilotButton })
 
-function GalaxyScene:init(numOfStars)
+function GalaxyScene:init(numOfStars, ui)
     galaxy = Galaxy:new(numOfStars)
     galaxyx = width/2
     galaxyy = height/2
@@ -96,6 +97,7 @@ function GalaxyScene:update(dt)
             route = {}
             galaxy:plotRoute(game.myship.loc, selected, route)
             game.plottedRoutes[selected] = route
+            game.myship.route = route
         end
     end
 
@@ -109,7 +111,6 @@ function GalaxyScene:draw()
         selectedScreenX, selectedScreenY = galaxy:screenPos(selected)
     end
 
-    -- TODO: This is terrible
     local ranges = { 
         { dist = game.myship.plottingRange, fillColor = {.1,0,.1}, lineColor = {.2,0,.2} },
         { dist = game.myship.scanningRange, fillColor = {0,0,.1}, lineColor = {0,0,.4} },
@@ -131,6 +132,7 @@ function GalaxyScene:draw()
         love.graphics.setColor(.8, .8, .8)
     
         -- Show selections or hover indications
+        love.graphics.setLineWidth(1);
         if selected == i then
             love.graphics.setFont(smallfont)
             love.graphics.setColor(1, 1, 0)
@@ -228,8 +230,8 @@ function GalaxyScene:mousepressed(x,y,button)
             elseif button == 2 and inRange[i] then
                 selected = i
                 if i ~= game.myship.loc then
-                    WarpScene:load()
                     game.myship:moveTo(i)
+                    WarpScene:load()
                 else 
                     SolarScene.load()
                 end

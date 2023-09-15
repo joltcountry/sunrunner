@@ -1,8 +1,8 @@
 Scene = {}
 
-function Scene:new()
+function Scene:new(ui)
     local o = {}
-
+    o.ui = ui
     setmetatable(o, self)
     self.__index = self
     return o

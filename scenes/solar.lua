@@ -1,7 +1,8 @@
 require "obj.sceneryStar"
 require "obj.scene"
+require "ui.autopilotButton"
 
-SolarScene = Scene:new()
+SolarScene = Scene:new({ AutopilotButton })
 
 local star, planetDirs, hovered
 
