@@ -12,7 +12,7 @@ function WarpScene:load()
     timer = 0
     stars = {}
     spinDir = math.random(-5, 5)
-    local dist = getDistance(galaxy.stars[selected].x, galaxy.stars[selected].y, galaxy.stars[game.myship.loc].x, galaxy.stars[game.myship.loc].y)
+    local dist = galaxy:getDistance(selected, game.myship.loc)
     length = math.max(1, math.min(3, dist / (game.myship.travelRange / 3)))
 end
 

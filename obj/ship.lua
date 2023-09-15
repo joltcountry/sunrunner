@@ -14,8 +14,6 @@ end
 
 function Ship:moveTo(loc)
     self.loc = loc
-    if not galaxy.stars[loc].built then
-        galaxy.stars[loc]:build()
-    end
+    galaxy.stars[loc]:build()
     game.plottedRoutes = {}
 end

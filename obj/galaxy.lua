@@ -61,7 +61,7 @@ function Galaxy:getLocation(i)
     return self.stars[i].x, self.stars[i].y
 end
 
-function Galaxy:starsInRange(x, y, range)
+function Galaxy:starsInRange(range, x, y)
     local inRange = {}
     local stars = {}
     for i, v in ipairs(self.stars) do
@@ -74,31 +74,26 @@ function Galaxy:starsInRange(x, y, range)
     return inRange, stars
 end
 
+-- TODO - snipping causes problems sometimes
+-- seed 1694697884 issue
 function Galaxy:plotRoute(start, target, route, failures)
     failures = failures or {}
     if #route == 0 then route[1] = start end
     previousCandidates = previousCandidates or {}
-    local startX = self.stars[start].x
-    local startY = self.stars[start].y
-    local targetX = self.stars[target].x
-    local targetY = self.stars[target].y
     local candidates = {}
 
-    -- TODO clean this up to reuse "starsInRange"
-    for i, v in ipairs(self.stars) do
-        local dist = getDistance(startX, startY, v.x, v.y)
-        if dist <= game.myship.travelRange then
-            for j, w in pairs(route) do
-                if (i == w) then goto skip end
-            end
-            for j, w in pairs(failures) do
-                if (i == w) then goto skip end
-            end
-            local distFromShip = getDistance(galaxy.stars[game.myship.loc].x, galaxy.stars[game.myship.loc].y, v.x, v.y)
-            if distFromShip > game.myship.plottingRange then goto skip end
-            candidates[#candidates+1] = {star = i, dist = getDistance(v.x, v.y, targetX, targetY)}
-            ::skip::
+    local inRange = self:starsInRange(game.myship.travelRange, self:xy(start))
+    for i, v in pairs(inRange) do
+        for j, w in pairs(route) do
+            if (i == w) then goto skip end
         end
+        for j, w in pairs(failures) do
+            if (i == w) then goto skip end
+        end
+        local distFromShip = galaxy:getDistance(game.myship.loc, i)
+        if distFromShip > game.myship.plottingRange then goto skip end
+        candidates[#candidates+1] = {star = i, dist = galaxy:getDistance(i, target)}
+        ::skip::
     end
     
     -- sort candidates by dist to target
@@ -113,7 +108,7 @@ function Galaxy:plotRoute(start, target, route, failures)
                 for j = #route, i+2, -1 do
                     if getDistance(self.stars[route[i]].x, self.stars[route[i]].y, self.stars[route[j]].x, self.stars[route[j]].y) <= game.myship.travelRange then
                         print("snipping from " .. i .. " to " .. j)
-                        for x = i+1, j do
+                        for x = i+1, j-1 do
                             table.remove(route, i+1)
                         end
                         goto next
@@ -134,4 +129,18 @@ function Galaxy:plotRoute(start, target, route, failures)
         end
     end 
     return false
+end
+
+function Galaxy:xy(loc)
+    return self.stars[loc].x, self.stars[loc].y
+end
+
+function Galaxy:getDistance(start, target)
+    local startX, startY = self:xy(start)
+    local targetX, targetY = self:xy(target)
+    return getDistance(startX, startY, targetX, targetY)
+end
+
+function Galaxy:screenPos(loc)
+    return galaxyx + galaxy.stars[loc].x * zoom, galaxyy + galaxy.stars[loc].y * zoom
 end

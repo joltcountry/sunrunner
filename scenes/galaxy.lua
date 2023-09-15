@@ -12,15 +12,14 @@ function GalaxyScene:init(numOfStars)
 end
 
 function GalaxyScene:centerOn(loc)
-    local x = galaxy.stars[loc].x
-    local y = galaxy.stars[loc].y 
+    local x, y = galaxy:xy(loc)
     galaxyx = -x * zoom + width/2
     galaxyy = -y * zoom + height/2
 end
 
 function GalaxyScene:load()
     scene = "galaxy"
-    self:centerOn(game.myship.loc)
+    --self:centerOn(game.myship.loc)
 end
 
 function GalaxyScene:update(dt)
@@ -30,8 +29,8 @@ function GalaxyScene:update(dt)
     inRange = {}
     inScanningRange = {}
     shipX, shipY = galaxy:getLocation(game.myship.loc)
-    inRange = galaxy:starsInRange(shipX, shipY, game.myship.travelRange)
-    inScanningRange = galaxy:starsInRange(shipX, shipY, game.myship.scanningRange)
+    inRange = galaxy:starsInRange(game.myship.travelRange, galaxy:xy(game.myship.loc))
+    inScanningRange = galaxy:starsInRange(game.myship.scanningRange, galaxy:xy(game.myship.loc))
 
     -- Determine which ones are likely to displayed, dispense with the rest
     local selectedDisplayed = false
@@ -51,7 +50,7 @@ function GalaxyScene:update(dt)
         end
 
         -- auto explore
-        if not v.built and inScanningRange[i] then
+        if inScanningRange[i] then
             v:build()
         end
 
@@ -92,7 +91,7 @@ function GalaxyScene:update(dt)
         oldy = nil
     end
 
-    if selected and selected ~= game.myship.loc and getDistance(galaxy.stars[game.myship.loc].x, galaxy.stars[game.myship.loc].y, galaxy.stars[selected].x, galaxy.stars[selected].y) <= game.myship.plottingRange then
+    if selected and selected ~= game.myship.loc and galaxy:getDistance(game.myship.loc, selected) <= game.myship.plottingRange then
         if not game.plottedRoutes[selected] then
             route = {}
             galaxy:plotRoute(game.myship.loc, selected, route)
@@ -104,37 +103,24 @@ end
 
 function GalaxyScene:draw()
 
-    shipScreenX = galaxyx + galaxy.stars[game.myship.loc].x * zoom
-    shipScreenY = galaxyy + galaxy.stars[game.myship.loc].y * zoom
+    shipScreenX, shipScreenY = galaxy:screenPos(game.myship.loc)
 
     if selected ~= nil then
-        selectedScreenX = galaxyx + galaxy.stars[selected].x * zoom
-        selectedScreenY = galaxyy + galaxy.stars[selected].y * zoom
+        selectedScreenX, selectedScreenY = galaxy:screenPos(selected)
     end
 
     -- TODO: This is terrible
-    love.graphics.setColor(.1,0,.1)
-    love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.plottingRange * zoom);
-    love.graphics.setColor(.2,0,.2)
-    love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.plottingRange * zoom);
-    if (game.myship.travelRange < game.myship.scanningRange) then
-        love.graphics.setColor(0,0,.1)
-        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
-        love.graphics.setColor(0,0,.4)
-        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
-        love.graphics.setColor(0,.1,0)
-        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
-        love.graphics.setColor(0,.4,0)
-        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
-    else
-        love.graphics.setColor(0,.1,0)
-        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
-        love.graphics.setColor(0,.4,0)
-        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.travelRange * zoom);
-        love.graphics.setColor(0,0,.1)
-        love.graphics.circle("fill", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
-        love.graphics.setColor(0,0,.4)
-        love.graphics.circle("line", shipScreenX, shipScreenY, game.myship.scanningRange * zoom);
+    local ranges = { 
+        { dist = game.myship.plottingRange, fillColor = {.1,0,.1}, lineColor = {.2,0,.2} },
+        { dist = game.myship.scanningRange, fillColor = {0,0,.1}, lineColor = {0,0,.4} },
+        { dist = game.myship.travelRange, fillColor = {0,.1,0}, lineColor = {0,.4,0} }
+    }
+    table.sort(ranges, function (c1, c2) return c1.dist > c2.dist end )
+    for _,v in pairs(ranges) do
+        love.graphics.setColor(v.fillColor)
+        love.graphics.circle("fill", shipScreenX, shipScreenY, v.dist * zoom);
+        love.graphics.setColor(v.lineColor)
+        love.graphics.circle("line", shipScreenX, shipScreenY, v.dist * zoom);
     end
 
     for i,v in pairs(displayed) do
@@ -177,7 +163,7 @@ function GalaxyScene:draw()
         -- Draw ship
         if game.myship.loc == i then
             love.graphics.setColor(1,1,1)
-            love.graphics.draw(game.myship.image, screenX+2, screenY-2, 0, zoom / 30)
+            love.graphics.draw(game.myship.image, screenX+2, screenY-2, 0, zoom / 50)
         end
 
         -- Render the actual star
