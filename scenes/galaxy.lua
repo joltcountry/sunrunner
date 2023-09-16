@@ -3,14 +3,15 @@ require "utils"
 require "obj.scene"
 require "ui.autopilotButton"
 require "ui.cancelRouteButton"
+require "ui.starFrame"
 
 GalaxyScene = Scene:new({ 
     AutopilotButton,
-    CancelRouteButton
+    CancelRouteButton,
+    StarFrame
  })
-local hovered
 
-function GalaxyScene:init(numOfStars, ui)
+function GalaxyScene:init(numOfStars)
     galaxy = Galaxy:new(numOfStars)
     galaxyx = width/2
     galaxyy = height/2
@@ -41,7 +42,7 @@ function GalaxyScene:update(dt)
     -- Determine which ones are likely to displayed, dispense with the rest
     for i,v in ipairs(galaxy.stars) do
         if zoom < 5 then
-            v.dir = v.dir + .5 * dt
+            v.dir = v.dir + 1 * dt
         end
         v.x = math.sin(math.rad(v.dir)) * v.dist
         v.y = -math.cos(math.rad(v.dir)) * v.dist
@@ -60,7 +61,7 @@ function GalaxyScene:update(dt)
 
     -- See if the mouse is hovering over a star
     x, y = love.mouse.getPosition()
-    hovered = nil
+    game.hovered = nil
     for i,v in pairs(displayed) do
         v.x = math.sin(math.rad(v.dir)) * v.dist
         v.y = -math.cos(math.rad(v.dir)) * v.dist
@@ -68,7 +69,7 @@ function GalaxyScene:update(dt)
         local screenX = galaxyx + v.x * zoom
         local screenY = galaxyy + v.y * zoom
         if x > screenX - size and x < screenX + size and y > screenY - size and y < screenY + size then
-            hovered = i
+            game.hovered = i
         end
     end
 
@@ -122,7 +123,7 @@ function GalaxyScene:draw()
     
         -- Show selections or hover indications
         love.graphics.setLineWidth(1);
-        if hovered == i then
+        if game.hovered == i then
             love.graphics.setFont(smallfont)
             love.graphics.setColor(.5, 1, .5)
             if v.built and zoom > 5 then 
@@ -137,7 +138,7 @@ function GalaxyScene:draw()
     
         -- Draw possible travel routes
         if inRange[i] then
-            if hovered == i then
+            if game.hovered == i then
                 love.graphics.setLineWidth(1);
                 love.graphics.setColor(math.random(), math.random(), 1)
                 love.graphics.line(screenX, screenY, shipScreenX, shipScreenY)
@@ -202,7 +203,7 @@ function GalaxyScene:mousepressed(x,y,button)
             if button == 1 then 
                 local time = love.timer.getTime()
                 if time < lastClick + clickInterval then
-                    SolarScene:load(hovered)
+                    SolarScene:load(game.hovered)
                 end
                 lastClick = time
                 goto continue

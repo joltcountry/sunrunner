@@ -44,6 +44,7 @@ function Star:build()
             local planet = Planet:new(math.random(1,10), math.random(5,15), nextOrbit, moons)
             self.planets[i] = planet
         end
+        table.sort(self.planets, function (p1, p2) return p1.orbit < p2.orbit end)
     end
     self.built = true
 end
@@ -66,4 +67,10 @@ function Star:moonCount()
         moonCount = moonCount + #v.moons
     end
     return moonCount
+end
+
+function Star:getPlanetAtOrbit(n)
+    for _, v in pairs(self.planets) do
+        if v.orbit == n then return v end
+    end
 end

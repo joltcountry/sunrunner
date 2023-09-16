@@ -18,19 +18,25 @@ end
 
 function Button:draw()
     if self.active then
-        local x = self.xpct / 100 * width
-        local y = self.ypct / 100 * height
-        local buttonWidth = self.widthpct / 100 * width
-        local buttonHeight = self.heightpct / 100 * height
-
         love.graphics.setColor(self.backgroundColor)
-        love.graphics.rectangle("fill", x, y, buttonWidth, buttonHeight)
+        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
         love.graphics.setColor(self.borderColor)
         love.graphics.setLineWidth(3)
-        love.graphics.rectangle("line", x, y, buttonWidth, buttonHeight)
+        love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
         love.graphics.setFont(smallfont)
         love.graphics.setColor(self.textColor)
-        love.graphics.print(self.text, x + buttonWidth / 2 - (smallfont:getWidth(self.text) / 2), y + buttonHeight / 2 - (smallfont:getHeight(self.text) / 2))
+        self:printCentered(self.text, self.height / 2 - (smallfont:getHeight(self.text) / 2))
+    end
+end
+
+function Button:mousepressed(x,y,button)
+    if self.active then
+        local endX = self.x + self.width
+        local endY = self.y + self.height
+        if x > self.x and x < endX and y > self.y and y < endY then
+            self:clicked(x - self.x, y - self.y, button)
+            return true
+        end
     end
 end
 

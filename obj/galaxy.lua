@@ -3,12 +3,12 @@ require "utils"
 
 Galaxy = {}
 
-local letters = { "aeiouy", "bcdfghklmnprstvwxz" }
+local letters = { "aeiou", "bcdfghklmnprstvw" }
 local starNames = {}
 
 function generateStarName()
     local name = ""
-    local len = math.random(2,9)
+    local len = math.random(2,8)
     local vc = math.random(1,2)
     for i = 1, len do
         local rand = math.random(1, #letters[vc])
@@ -45,10 +45,8 @@ function Galaxy:new(numOfStars, spacing)
                 end
             end
             ::giveUp::
---            if (tooClose) then print("Ya too close, mon! "..n) end
             attempts = attempts + 1
             if attempts > 500 then 
-  --              print("Giving up. :(")
                 goto tryAgain
             end
         until not tooClose
@@ -128,7 +126,7 @@ function Galaxy:plotRoute(start, target, route, failures)
             for i = 1, #route do
                 for j = #route, i+2, -1 do
                     if getDistance(self.stars[route[i]].x, self.stars[route[i]].y, self.stars[route[j]].x, self.stars[route[j]].y) <= game.myship.travelRange then
-                        print("snipping from " .. i .. " to " .. j)
+                        -- print("snipping from " .. i .. " to " .. j)
                         for x = i+1, j-1 do
                             table.remove(route, i+1)
                         end

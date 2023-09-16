@@ -4,8 +4,8 @@ function Ship:new(loc)
     local o = {}
     o.loc = loc
     o.image = love.graphics.newImage("assets/images/ship.png")
-    o.travelRange = 15
-    o.scanningRange = 25
+    o.travelRange = 16
+    o.scanningRange = 32
     o.plottingRange = 100
     setmetatable(o, self)
     self.__index = self

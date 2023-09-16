@@ -1,3 +1,6 @@
+width = 1600
+height = 900
+
 require "scenes.galaxy"
 require "scenes.solar"
 require "scenes.warp"
@@ -27,11 +30,12 @@ function love.load()
 	height = love.graphics.getHeight()
     bigfont = love.graphics.newFont(36)
     smallfont = love.graphics.newFont(12)
-    zoom = 30
+    mediumfont = love.graphics.newFont(24)
+    zoom = 10
     lastClick = 0
     clickInterval = .2
 
-    GalaxyScene:init(10000, { AutopilotButton })
+    GalaxyScene:init(10000)
     local _, inRangeStars = galaxy:starsInRange(100, 0, 0)
     game.myship = Ship:new(inRangeStars[math.random(1, #inRangeStars)].id)
     game.plottedRoutes = {}
