@@ -95,12 +95,11 @@ end
 
 -- TODO - snipping causes problems sometimes
 -- seed 1694697884 issue
-function Galaxy:plotRoute(start, target, route, failures)
+function Galaxy:plotRoute(start, target, route, failures, nosnip)
     route = route or { start }
     failures = failures or {}
     previousCandidates = previousCandidates or {}
     local candidates = {}
-
     local inRange = self:starsInRange(game.myship.travelRange, self:xy(start))
     for i, v in pairs(inRange) do
         for j, w in pairs(route) do
@@ -122,23 +121,24 @@ function Galaxy:plotRoute(start, target, route, failures)
         route[#route+1] = v.star
         if v.star == target then
 
-            -- snip scenic routes
-            for i = 1, #route do
-                for j = #route, i+2, -1 do
-                    if getDistance(self.stars[route[i]].x, self.stars[route[i]].y, self.stars[route[j]].x, self.stars[route[j]].y) <= game.myship.travelRange then
-                        -- print("snipping from " .. i .. " to " .. j)
-                        for x = i+1, j-1 do
-                            table.remove(route, i+1)
+            if not nosnip then
+                -- snip scenic routes
+                for i = 1, #route do
+                    for j = #route, i+2, -1 do
+                        if getDistance(self.stars[route[i]].x, self.stars[route[i]].y, self.stars[route[j]].x, self.stars[route[j]].y) <= game.myship.travelRange then
+                            print("snipping from " .. i .. " to " .. j)
+                            for x = i+1, j-1 do
+                                table.remove(route, i+1)
+                            end
+                            goto next
                         end
-                        goto next
                     end
+                    ::next::
                 end
-                ::next::
             end
-
             return route
         else
-            local route = self:plotRoute(v.star, target, route, failures)
+            local route = self:plotRoute(v.star, target, route, failures, nosnip)
             if #route > 1 then
                 return route
             else

@@ -1,15 +1,16 @@
 require "obj.sceneryStar"
 require "obj.scene"
 require "ui.autopilotButton"
+require "ui.planetFrame"
+SolarScene = Scene:new({ AutopilotButton, PlanetFrame })
 
-SolarScene = Scene:new({ AutopilotButton })
-
-local star, planetDirs, hovered
+local star, planetDirs
 
 function SolarScene:load(loc)
 
-    hovered = nil
+    self.state.hovered = nil
     star = galaxy.stars[loc]
+    self.state.star = star
     game.scene = "solar"
     sceneryStars = {}
     for i=1,200 do
@@ -37,7 +38,7 @@ function SolarScene:load(loc)
 end
 
 function SolarScene:update(dt)
-    hovered = nil
+    self.state.hovered = nil
     x,y = love.mouse.getPosition()
     for i,v in ipairs(sceneryStars) do
         v:move(-.05,0)
@@ -47,7 +48,7 @@ function SolarScene:update(dt)
             local dist = getDistance(x, y, width/2, height/2)
             local ring = star.size + 40 * star.planets[i].orbit
             if dist > ring - 20 and dist < ring + 20 then
-                hovered = i
+                self.state.hovered = i
             end
         
             planetDirs[i] = (planetDirs[i] + star.planets[i].speed * 5 * dt) % 360
@@ -82,7 +83,7 @@ function SolarScene:draw()
         for i = 1, #star.planets do
             local radius = star.size + star.planets[i].orbit * 40
             -- draw planet selector ring
-            if (hovered == i) then
+            if (self.state.hovered == i) then
                 love.graphics.setColor(.05, .1, .1)
                 love.graphics.setLineWidth(40)
                 love.graphics.circle('line', width/2, height/2, radius)
@@ -121,34 +122,6 @@ function SolarScene:draw()
         message = "Unexplored"
     end
     love.graphics.print(message, width / 2 - (bigfont:getWidth(message)/2), 10)
-
-    if star.built then
-        -- Draw planet window thing
-        love.graphics.setFont(smallfont)
-        love.graphics.setColor(0,0,0)
-        love.graphics.rectangle("fill", 1400, 200, 150, 200)
-        love.graphics.setColor(.5, 1, .5)
-        love.graphics.rectangle("line", 1400, 200, 150, 200)
-        love.graphics.print("Planet", 1455, 210)
-        if (hovered) then
-            love.graphics.setColor(1,1,1)
-            love.graphics.draw(planetImages[star.planets[hovered].type], 1420, 220, .2)
-            love.graphics.print("Moons: " .. #star.planets[hovered].moons, 1450, 380)
-
-            --love.graphics.circle('fill', 1475, 310, star.planets[hovered].size * 3)
-            -- for j = 1, #star.planets[hovered].moons do
-            --     moonDirs = star.planets[hovered].moonDirs
-            --     local moonRadius = star.planets[hovered].size * 3 + 5 + star.planets[hovered].moons[j].orbit * 5
-            --     love.graphics.setColor(.1, .1, .1)
-            --     love.graphics.circle('line', 1475, 310, moonRadius)
-            --     love.graphics.setColor(.3, .3, .5)
-            --     moonX = 1475 + math.sin(math.rad(moonDirs[j])) * moonRadius
-            --     moonY = 310 - math.cos(math.rad(moonDirs[j])) * moonRadius
-            --     love.graphics.circle('fill', moonX, moonY, star.planets[hovered].moons[j].size)
-            -- end
-
-        end
-    end
 
     if game.myship.loc == star.id then
         love.graphics.setColor(1,1,1)

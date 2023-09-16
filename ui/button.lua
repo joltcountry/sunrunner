@@ -1,4 +1,4 @@
-require ("ui.UIElement")
+require ("ui.uiElement")
 
 Button = UIElement:new()
 

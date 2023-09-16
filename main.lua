@@ -1,6 +1,3 @@
-width = 1600
-height = 900
-
 require "scenes.galaxy"
 require "scenes.solar"
 require "scenes.warp"
@@ -12,6 +9,19 @@ local scenes = {
     solar = SolarScene,
     warp = WarpScene
 }
+
+function setResolution(w, h)
+    width = w
+    height = h
+    for _,v in pairs(scenes) do
+        if v.ui then
+            for _,element in pairs(v.ui) do
+                element:setDimensions(w, h)
+            end
+        end
+    end
+    love.window.setMode(w, h)
+end
 
 function love.load()
 
@@ -25,9 +35,7 @@ function love.load()
     local seedTime = os.time()
     print("seed: " .. seedTime)
     math.randomseed(seedTime)
-    love.window.setMode(1600, 900)
-	width = love.graphics.getWidth()
-	height = love.graphics.getHeight()
+    setResolution(1600, 900)
     bigfont = love.graphics.newFont(36)
     smallfont = love.graphics.newFont(12)
     mediumfont = love.graphics.newFont(24)
@@ -49,7 +57,7 @@ function love.update(dt)
     scenes[game.scene]:update(dt)
     if scenes[game.scene].ui then
         for _,v in pairs(scenes[game.scene].ui) do
-            v:update(dt)
+            v:update(dt, scenes[game.scene])
         end
     end
 end
@@ -58,7 +66,7 @@ function love.draw()
     scenes[game.scene]:draw()
     if scenes[game.scene].ui then
         for _,v in pairs(scenes[game.scene].ui) do
-            v:draw()
+            v:draw(scenes[game.scene])
         end
     end
 
@@ -67,13 +75,13 @@ function love.draw()
 end
 
 function love.wheelmoved(x, y)
-    scenes[game.scene]:wheelmoved(x,y)
+    scenes[game.scene]:wheelmoved(x,y, scenes[game.scene])
 end
 
 function love.mousepressed(x, y, button)
     if scenes[game.scene].ui then
         for _,v in pairs(scenes[game.scene].ui) do
-            local interacted = v:mousepressed(x, y, button)
+            local interacted = v:mousepressed(x, y, button, scenes[game.scene])
             if interacted then goto done end
         end
     end
@@ -84,7 +92,7 @@ end
 function love.keypressed(key, scancode, isrepeat)
     if scenes[game.scene].ui then
         for _,v in pairs(scenes[game.scene].ui) do
-            local interacted = v:keypressed(key, scancode, isrepeat)
+            local interacted = v:keypressed(key, scancode, isrepeat, scenes[game.scene])
             if interacted then goto done end
         end
     end

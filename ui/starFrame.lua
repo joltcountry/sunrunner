@@ -2,9 +2,9 @@ require ("ui.frame")
 
 StarFrame = Frame:new(80, 2, 19, 50, { .7, .7, .7 }, {.0, .2, .2})
 
-function StarFrame:render()
-    if (game.hovered) then
-        local star = galaxy.stars[game.hovered]
+function StarFrame:render(scene)
+    if (scene.state.hovered) then
+        local star = galaxy.stars[scene.state.hovered]
         love.graphics.setFont(mediumfont)
         love.graphics.setColor(1,1,1)
         if not star.built then

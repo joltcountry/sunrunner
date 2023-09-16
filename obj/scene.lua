@@ -2,6 +2,7 @@ Scene = {}
 
 function Scene:new(ui)
     local o = {}
+    o.state = {}
     o.ui = ui
     setmetatable(o, self)
     self.__index = self

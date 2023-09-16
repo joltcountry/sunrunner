@@ -61,7 +61,7 @@ function GalaxyScene:update(dt)
 
     -- See if the mouse is hovering over a star
     x, y = love.mouse.getPosition()
-    game.hovered = nil
+    self.state.hovered = nil
     for i,v in pairs(displayed) do
         v.x = math.sin(math.rad(v.dir)) * v.dist
         v.y = -math.cos(math.rad(v.dir)) * v.dist
@@ -69,7 +69,7 @@ function GalaxyScene:update(dt)
         local screenX = galaxyx + v.x * zoom
         local screenY = galaxyy + v.y * zoom
         if x > screenX - size and x < screenX + size and y > screenY - size and y < screenY + size then
-            game.hovered = i
+            self.state.hovered = i
         end
     end
 
@@ -123,7 +123,7 @@ function GalaxyScene:draw()
     
         -- Show selections or hover indications
         love.graphics.setLineWidth(1);
-        if game.hovered == i then
+        if self.state.hovered == i then
             love.graphics.setFont(smallfont)
             love.graphics.setColor(.5, 1, .5)
             if v.built and zoom > 5 then 
@@ -138,7 +138,7 @@ function GalaxyScene:draw()
     
         -- Draw possible travel routes
         if inRange[i] then
-            if game.hovered == i then
+            if self.state.hovered == i then
                 love.graphics.setLineWidth(1);
                 love.graphics.setColor(math.random(), math.random(), 1)
                 love.graphics.line(screenX, screenY, shipScreenX, shipScreenY)
@@ -203,7 +203,7 @@ function GalaxyScene:mousepressed(x,y,button)
             if button == 1 then 
                 local time = love.timer.getTime()
                 if time < lastClick + clickInterval then
-                    SolarScene:load(game.hovered)
+                    SolarScene:load(self.state.hovered)
                 end
                 lastClick = time
                 goto continue
@@ -218,11 +218,23 @@ function GalaxyScene:mousepressed(x,y,button)
                     end
                     goto continue
                 else
-                    if not game.plottedRoutes[i] then
-                        local route = galaxy:plotRoute(game.myship.loc, i)
-                        game.plottedRoutes[i] = route
+                    if not game.myship.route or #game.myship.route == 1 then
+                        if not game.plottedRoutes[i] then
+                            local route = galaxy:plotRoute(game.myship.loc, i)
+                            game.plottedRoutes[i] = route
+                        end
+                        game.myship.route = game.plottedRoutes[i]
+                    else
+                        if (i ~= game.myship.route[#game.myship.route]) then
+                            local inRoute = false
+                            for _,v in pairs(game.myship.route) do
+                                if v == i then inRoute = true end
+                            end
+                            if not inRoute then
+                                game.myship.route = galaxy:plotRoute(game.myship.route[#game.myship.route], i, game.myship.route, nil, true)
+                            end
+                        end
                     end
-                    game.myship.route = game.plottedRoutes[i]
                 end
             end
         end
