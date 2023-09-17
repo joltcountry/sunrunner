@@ -115,6 +115,7 @@ function SolarScene:draw()
             
         end
     end
+
     -- Draw header
     love.graphics.setFont(bigfont)
     love.graphics.setColor(1, .5, 0)
@@ -129,7 +130,6 @@ function SolarScene:draw()
         love.graphics.setColor(1,1,1)
         love.graphics.draw(game.myship.image, 200, 700)
     end
-
     
 end
 
