@@ -40,7 +40,6 @@ end
 
 function UIComponent:setMode(mode)
     for _, el in pairs(self.uiElements) do
-        print("hi")
         el:setMode(mode)
     end
 end

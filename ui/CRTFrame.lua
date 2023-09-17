@@ -11,7 +11,6 @@ function CRTFrame:new(xpct, ypct, widthpct, heightpct, mode)
 end
 
 function CRTFrame:setMode(mode) 
-    print("yo")
     self.mode = mode
     if mode == "heliotrope" then
         self.borderColor = {1, 0, 1}
