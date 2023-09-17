@@ -1,9 +1,9 @@
-require ("ui.uiElement")
+require ("ui.frame")
 
-Frame = UIElement:new()
+SimpleFrame = Frame:new()
 
-function Frame:new(xpct, ypct, widthpct, heightpct, borderColor, backgroundColor)
-    local o = UIElement:new(xpct, ypct, widthpct, heightpct)
+function SimpleFrame:new(xpct, ypct, widthpct, heightpct, borderColor, backgroundColor)
+    local o = Frame:new(xpct, ypct, widthpct, heightpct)
     o.borderColor = borderColor or {.5, 1, .5}
     o.backgroundColor = backgroundColor or {0,0,0}
     setmetatable(o, self)
@@ -11,7 +11,7 @@ function Frame:new(xpct, ypct, widthpct, heightpct, borderColor, backgroundColor
     return o
 end
 
-function Frame:draw(scene)
+function SimpleFrame:draw(scene)
     if self.active then
         love.graphics.setColor(self.backgroundColor)
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
@@ -24,9 +24,9 @@ function Frame:draw(scene)
     end
 end
 
-function Frame:render(scene)
+function SimpleFrame:render(scene)
 end
 
-function Frame:clicked(x, y, button, scene)
+function SimpleFrame:clicked(x, y, button, scene)
 end
 

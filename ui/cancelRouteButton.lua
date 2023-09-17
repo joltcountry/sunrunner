@@ -1,7 +1,7 @@
 require("ui.button")
 require("scenes.warp")
 
-CancelRouteButton = Button:new(82.5, 95, 8, 4, "Cancel Route", { 1, 1, .5 }, { .2, .2, .5})
+CancelRouteButton = Button:new(91, 90, 8, 4, "Cancel Route", { 1, 1, .5 }, { .2, .2, .5})
 
 function CancelRouteButton:update(dt)
     if game.myship.route and #game.myship.route > 1 then

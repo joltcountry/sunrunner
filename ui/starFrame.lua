@@ -1,6 +1,10 @@
-require ("ui.frame")
+require ("ui.simpleFrame")
 
-StarFrame = Frame:new(80, 2, 19, 50, { .7, .7, .7 }, {.0, .2, .2})
+StarFrame = SimpleFrame:new(80, 2, 19, 50, { .7, .7, .7 }, {.0, .2, .2})
+
+function StarFrame:update(dt, scene)
+    if (scene.state.hovered) then self.active = true else self.active = false end
+end
 
 function StarFrame:render(scene)
     if (scene.state.hovered) then

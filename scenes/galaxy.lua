@@ -4,11 +4,13 @@ require "obj.scene"
 require "ui.autopilotButton"
 require "ui.cancelRouteButton"
 require "ui.starFrame"
+require "ui.shipConsole"
 
 GalaxyScene = Scene:new({ 
     AutopilotButton,
     CancelRouteButton,
-    StarFrame
+    StarFrame,
+    ShipConsole
  })
 
 function GalaxyScene:init(numOfStars)
@@ -148,7 +150,7 @@ function GalaxyScene:draw()
         -- Draw ship
         if game.myship.loc == i then
             love.graphics.setColor(1,1,1)
-            love.graphics.draw(game.myship.image, screenX+2, screenY-2, 0, zoom / 50)
+            love.graphics.draw(game.myship.image, screenX+2, screenY-2*zoom, 0, zoom / 50)
         end
 
         -- Render the actual star

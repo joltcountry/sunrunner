@@ -29,16 +29,5 @@ function Button:draw()
     end
 end
 
-function Button:mousepressed(x,y,button)
-    if self.active then
-        local endX = self.x + self.width
-        local endY = self.y + self.height
-        if x > self.x and x < endX and y > self.y and y < endY then
-            self:clicked(x - self.x, y - self.y, button)
-            return true
-        end
-    end
-end
-
 function Button:clicked(x, y, button)
 end

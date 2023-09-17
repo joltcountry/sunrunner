@@ -1,6 +1,6 @@
-require ("ui.frame")
+require ("ui.simpleFrame")
 
-PlanetFrame = Frame:new(80, 2, 19, 50, { .7, .2, .7 }, {.2, 0, .2})
+PlanetFrame = SimpleFrame:new(80, 2, 19, 50, { .7, .2, .7 }, {.2, 0, .2})
 
 local romans = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" }
 function PlanetFrame:update(dt, scene)

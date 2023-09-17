@@ -15,17 +15,27 @@ function setResolution(w, h)
     height = h
     for _,v in pairs(scenes) do
         if v.ui then
-            for _,element in pairs(v.ui) do
-                element:setDimensions(w, h)
+            for _,uiComponent in pairs(v.ui) do
+                uiComponent:setDimensions(w, h)
             end
         end
     end
     love.window.setMode(w, h)
 end
 
+function setMode(mode)
+    for _,v in pairs(scenes) do
+        if v.ui then
+            for _,uiComponent in pairs(v.ui) do
+                uiComponent:setMode(mode)
+            end
+        end
+    end
+end
+
 function love.load()
 
-    game = {}
+    game = { credits = 1000 }
     planetImages = {}
     for i = 1,10 do
         planetImages[i] = love.graphics.newImage("assets/images/planets/planet" .. i .. ".png")
@@ -36,6 +46,7 @@ function love.load()
     print("seed: " .. seedTime)
     math.randomseed(seedTime)
     setResolution(1600, 900)
+    setMode("green")
     bigfont = love.graphics.newFont(36)
     smallfont = love.graphics.newFont(12)
     mediumfont = love.graphics.newFont(24)
@@ -75,7 +86,14 @@ function love.draw()
 end
 
 function love.wheelmoved(x, y)
+    if scenes[game.scene].ui then
+        for _,v in pairs(scenes[game.scene].ui) do
+            local interacted = v:mousepressed(x, y, button, scenes[game.scene])
+            if interacted then goto done end
+        end
+    end
     scenes[game.scene]:wheelmoved(x,y, scenes[game.scene])
+    ::done::
 end
 
 function love.mousepressed(x, y, button)

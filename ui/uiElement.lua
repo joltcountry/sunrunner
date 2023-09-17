@@ -29,6 +29,14 @@ function UIElement:keypressed(key, scancode, isrepeat, scene)
 end
 
 function UIElement:mousepressed(x,y,button, scene)
+    if self.active then
+        local endX = self.x + self.width
+        local endY = self.y + self.height
+        if x > self.x and x < endX and y > self.y and y < endY then
+            self:clicked(x - self.x, y - self.y, button)
+            return true
+        end
+    end
 end
 
 function UIElement:print(text, x, y)
@@ -66,4 +74,7 @@ function UIElement:drawImage(image, x, y, rot, scale)
     local realX = self.x + x
     local realY = self.y + y
     love.graphics.draw(image, realX, realY, rot, scale)
+end
+
+function UIElement:setMode(mode)
 end

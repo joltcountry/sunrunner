@@ -2,7 +2,12 @@ require "obj.sceneryStar"
 require "obj.scene"
 require "ui.autopilotButton"
 require "ui.planetFrame"
-SolarScene = Scene:new({ AutopilotButton, PlanetFrame })
+require "ui.shipFrame"
+require "ui.radarFrame"
+require "ui.leftFrame"
+require "ui.cancelRouteButton"
+
+SolarScene = Scene:new({ AutopilotButton, PlanetFrame, ShipConsole, CancelRouteButton })
 
 local star, planetDirs
 
