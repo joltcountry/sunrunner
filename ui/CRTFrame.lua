@@ -17,7 +17,7 @@ function CRTFrame:setMode(mode)
         self.backgroundColor = function(g) return {g*2, 0, g*2} end
     elseif mode == "amber" then
         self.borderColor = {1, .7, 0}
-        self.backgroundColor = function(g) return {g, g/1.5, 0} end
+        self.backgroundColor = function(g) return {g, g, 0} end
     else
         self.borderColor = {0, .7, 0}
         self.backgroundColor = function(g) return {0, g, 0} end

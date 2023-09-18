@@ -46,7 +46,7 @@ function love.load()
     print("seed: " .. seedTime)
     math.randomseed(seedTime)
     setResolution(1600, 900)
-    setMode("green")
+    setMode("amber")
     bigfont = love.graphics.newFont(36)
     smallfont = love.graphics.newFont(12)
     mediumfont = love.graphics.newFont(24)
@@ -65,12 +65,16 @@ function love.load()
 end
 
 function love.update(dt)
-    scenes[game.scene]:update(dt)
+    local uiHasMouse = false
     if scenes[game.scene].ui then
         for _,v in pairs(scenes[game.scene].ui) do
             v:update(dt, scenes[game.scene])
+            if v:hasMouse() then
+                uiHasMouse = true
+            end
         end
     end
+    scenes[game.scene]:update(dt, not uiHasMouse)
 end
 
 function love.draw()
@@ -86,34 +90,40 @@ function love.draw()
 end
 
 function love.wheelmoved(x, y)
+    local uiHasMouse = false
     if scenes[game.scene].ui then
         for _,v in pairs(scenes[game.scene].ui) do
-            local interacted = v:mousepressed(x, y, button, scenes[game.scene])
-            if interacted then goto done end
+            if v:hasMouse() then
+                uiHasMouse = true
+                v:wheelmoved(x, y, scenes[game.scene])
+            end
         end
     end
-    scenes[game.scene]:wheelmoved(x,y, scenes[game.scene])
-    ::done::
+    if not uiHasMouse then
+        scenes[game.scene]:wheelmoved(x,y, scenes[game.scene])
+    end
 end
 
 function love.mousepressed(x, y, button)
+    local uiHasMouse = false
     if scenes[game.scene].ui then
         for _,v in pairs(scenes[game.scene].ui) do
-            local interacted = v:mousepressed(x, y, button, scenes[game.scene])
-            if interacted then goto done end
+            if v:hasMouse() then
+                uiHasMouse = true
+                v:mousepressed(x, y, button, scenes[game.scene])
+            end
         end
     end
-    scenes[game.scene]:mousepressed(x,y,button)
-    :: done ::
+    if not uiHasMouse then
+        scenes[game.scene]:mousepressed(x,y,button)
+    end
 end
 
 function love.keypressed(key, scancode, isrepeat)
     if scenes[game.scene].ui then
         for _,v in pairs(scenes[game.scene].ui) do
-            local interacted = v:keypressed(key, scancode, isrepeat, scenes[game.scene])
-            if interacted then goto done end
+            v:keypressed(key, scancode, isrepeat, scenes[game.scene])
         end
     end
     scenes[game.scene]:keypressed(key, scancode, isrepeat)
-    :: done ::
 end

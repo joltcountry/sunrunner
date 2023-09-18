@@ -38,8 +38,24 @@ function UIComponent:mousepressed(x,y,button, scene)
     end
 end
 
+function UIComponent:wheelmoved(x,y, scene)
+    for _, el in pairs(self.uiElements) do
+        el:wheelmoved(x, y, scene)
+    end
+end
+
 function UIComponent:setMode(mode)
     for _, el in pairs(self.uiElements) do
         el:setMode(mode)
     end
+end
+
+function UIComponent:hasMouse()
+    local hasMouse = false
+    for _, el in pairs(self.uiElements) do
+        if el:hasMouse() then
+            hasMouse = true break
+        end
+    end
+    return hasMouse
 end

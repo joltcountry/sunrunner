@@ -15,7 +15,7 @@ end
 function Scene:load()
 end
 
-function Scene:update(dt)
+function Scene:update(dt, hasMouse)
 end
 
 function Scene:draw()

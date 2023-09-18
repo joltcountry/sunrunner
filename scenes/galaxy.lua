@@ -31,7 +31,7 @@ function GalaxyScene:load()
     --self:centerOn(game.myship.loc)
 end
 
-function GalaxyScene:update(dt)
+function GalaxyScene:update(dt, hasMouse)
 
     displayed = {}
 
@@ -61,41 +61,44 @@ function GalaxyScene:update(dt)
 
     end
 
-    -- See if the mouse is hovering over a star
-    x, y = love.mouse.getPosition()
-    self.state.hovered = nil
-    for i,v in pairs(displayed) do
-        v.x = math.sin(math.rad(v.dir)) * v.dist
-        v.y = -math.cos(math.rad(v.dir)) * v.dist
-        local size = galaxy.spacing * zoom
-        local screenX = galaxyx + v.x * zoom
-        local screenY = galaxyy + v.y * zoom
-        if x > screenX - size and x < screenX + size and y > screenY - size and y < screenY + size then
-            self.state.hovered = i
-        end
-    end
-
-    -- Handle mousedrag
-    if love.mouse.isDown(1) then
-        local x,y = love.mouse.getPosition()
-        if oldx == nil then
-            oldx = x
-            oldy = y
-        else
-            if x ~= oldx or y ~= oldy then
-                if (game.scene == "galaxy") then
-                    galaxyx = galaxyx + x - oldx
-                    galaxyy = galaxyy + y - oldy
-                end
+    if (hasMouse) then
+        -- See if the mouse is hovering over a star
+        x, y = love.mouse.getPosition()
+        self.state.hovered = nil
+        for i,v in pairs(displayed) do
+            v.x = math.sin(math.rad(v.dir)) * v.dist
+            v.y = -math.cos(math.rad(v.dir)) * v.dist
+            local size = galaxy.spacing * zoom
+            local screenX = galaxyx + v.x * zoom
+            local screenY = galaxyy + v.y * zoom
+            if x > screenX - size and x < screenX + size and y > screenY - size and y < screenY + size then
+                self.state.hovered = i
             end
-            oldx = x
-            oldy = y
+        end
+
+        -- Handle mousedrag
+        if love.mouse.isDown(1) then
+            local x,y = love.mouse.getPosition()
+            if oldx == nil then
+                oldx = x
+                oldy = y
+            else
+                if x ~= oldx or y ~= oldy then
+                    if (game.scene == "galaxy") then
+                        galaxyx = galaxyx + x - oldx
+                        galaxyy = galaxyy + y - oldy
+                    end
+                end
+                oldx = x
+                oldy = y
+            end
+        else
+            oldx = nil
+            oldy = nil
         end
     else
-        oldx = nil
-        oldy = nil
+        self.state.hovered = nil
     end
-
 end
 
 function GalaxyScene:draw()

@@ -12,6 +12,11 @@ function UIElement:new(xpct, ypct, widthpct, heightpct)
     return o
 end
 
+function UIElement:hasMouse()
+    local x, y = love.mouse.getPosition()
+    return x >= self.x and x <= (self.x + self.width) and y >= self.y and y <= (self.y + self.width)
+end
+
 function UIElement:setDimensions(w, h)
     self.x = self.xpct / 100 * (width or 0)
     self.y = self.ypct / 100 * (height or 0)
@@ -26,6 +31,9 @@ function UIElement:draw(scene)
 end
 
 function UIElement:keypressed(key, scancode, isrepeat, scene)
+end
+
+function UIElement:wheelmoved(x,y, scene)
 end
 
 function UIElement:mousepressed(x,y,button, scene)
