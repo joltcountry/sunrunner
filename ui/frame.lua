@@ -13,14 +13,14 @@ end
 
 function Frame:draw(scene)
     if self.active then
-        love.graphics.setColor(self.backgroundColor)
-        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-        love.graphics.setColor(self.borderColor)
-        love.graphics.setLineWidth(3)
-        love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
-        love.graphics.setScissor(self.x, self.y, self.width, self.height)
+        pingraph.setColor(self.backgroundColor)
+        pingraph.rectangle("fill", self.x, self.y, self.width, self.height)
+        pingraph.setColor(self.borderColor)
+        pingraph.setLineWidth(3)
+        pingraph.rectangle("line", self.x, self.y, self.width, self.height)
+        pingraph.setScissor(self.x, self.y, self.width, self.height)
         self:render(scene)
-        love.graphics.setScissor()
+        pingraph.setScissor()
     end
 end
 

@@ -54,7 +54,7 @@ function UIElement:print(text, x, y)
 end
 
 function UIElement:printCentered(text, y)
-    local currentFont = love.graphics.getFont()
+    local currentFont = pingraph.getFont()
     self:print(text, self.width / 2 - currentFont:getWidth(text) / 2, y)
 end
 
@@ -67,6 +67,7 @@ end
 function UIElement:rectangle(mode, x, y, w, h)
     local realX = self.x + x
     local realY = self.y + y
+    --print(realX .. " " .. realY .. " " .. w .. " " .. h)
     love.graphics.rectangle(mode, realX, realY, w, h)
 end
 

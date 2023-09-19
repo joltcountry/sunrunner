@@ -51,21 +51,21 @@ function WarpScene:draw()
     -- Draw scenery stars
     for x = 20,1,-1 do
         for i,v in ipairs(stars) do
-            love.graphics.setColor(0, 0, 1/x)
-            love.graphics.circle("fill", v.x, v.y, x * 3)
+            pingraph.setColor(0, 0, 1/x)
+            pingraph.circle("fill", v.x, v.y, x * 3)
         end
     end
     for i,v in ipairs(stars) do
-        love.graphics.setColor(0,0,1);
-        love.graphics.circle("fill", v.x, v.y, 3)
-        love.graphics.setColor(math.random(), math.random(), 1);
-        love.graphics.circle("fill", v.x, v.y, 2)
+        pingraph.setColor(0,0,1);
+        pingraph.circle("fill", v.x, v.y, 3)
+        pingraph.setColor(math.random(), math.random(), 1);
+        pingraph.circle("fill", v.x, v.y, 2)
     end
 
-    love.graphics.setColor(math.random(), math.random(), 1)
-    love.graphics.setFont(bigfont);
+    pingraph.setColor(math.random(), math.random(), 1)
+    pingraph.setFont(bigfont);
     local message = "Warping to " .. galaxy.stars[_to].name
-    love.graphics.print(message, width / 2 - bigfont:getWidth(message) / 2, 10)
+    pingraph.print(message, width / 2 - bigfont:getWidth(message) / 2, 10)
 
     galaxy.stars[_to]:draw(math.min(timer / length, 1))
 end

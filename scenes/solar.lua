@@ -86,49 +86,49 @@ function SolarScene:draw()
             local radius = star.size + star.planets[i].orbit * 40
             -- draw planet selector ring
             if (self.state.hovered == i) then
-                love.graphics.setColor(.05, .1, .1)
-                love.graphics.setLineWidth(40)
-                love.graphics.circle('line', width/2, height/2, radius)
+                pingraph.setColor(.05, .1, .1)
+                pingraph.setLineWidth(40)
+                pingraph.circle('line', width/2, height/2, radius)
             else
-                love.graphics.setLineWidth(1)
-                love.graphics.setColor(.1, .1, .1)
-                love.graphics.circle('line', width/2, height/2, radius)
+                pingraph.setLineWidth(1)
+                pingraph.setColor(.1, .1, .1)
+                pingraph.circle('line', width/2, height/2, radius)
             end
             planetX = width/2 + math.sin(math.rad(planetDirs[i])) * radius
             planetY = height/2 - math.cos(math.rad(planetDirs[i])) * radius
-            love.graphics.setLineWidth(1)
-            love.graphics.setColor(1,1,1)
+            pingraph.setLineWidth(1)
+            pingraph.setColor(1,1,1)
             planetSize = planetImages[star.planets[i].type]:getWidth() * star.planets[i].size / 40
             love.graphics.draw(planetImages[star.planets[i].type], planetX - planetSize / 2, planetY - planetSize / 2, 0, star.planets[i].size / 40)
-    --        love.graphics.setColor(star.planets[i].color)
-    --        love.graphics.circle('fill', planetX, planetY, star.planets[i].size)
+    --        pingraph.setColor(star.planets[i].color)
+    --        pingraph.circle('fill', planetX, planetY, star.planets[i].size)
             for j = 1, #star.planets[i].moons do
                 moonDirs = star.planets[i].moonDirs
                 local moonRadius = planetSize / 2 + star.planets[i].moons[j].orbit * 5
-                love.graphics.setColor(.1, .1, .1)
-                love.graphics.circle('line', planetX, planetY, moonRadius)
-                love.graphics.setColor(.3, .3, .5)
+                pingraph.setColor(.1, .1, .1)
+                pingraph.circle('line', planetX, planetY, moonRadius)
+                pingraph.setColor(.3, .3, .5)
                 moonX = planetX + math.sin(math.rad(moonDirs[j])) * moonRadius
                 moonY = planetY - math.cos(math.rad(moonDirs[j])) * moonRadius
-                love.graphics.circle('fill', moonX, moonY, star.planets[i].moons[j].size)
+                pingraph.circle('fill', moonX, moonY, star.planets[i].moons[j].size)
             end
             
         end
     end
 
     -- Draw header
-    love.graphics.setFont(bigfont)
-    love.graphics.setColor(1, .5, 0)
+    pingraph.setFont(bigfont)
+    pingraph.setColor(1, .5, 0)
     if star.built then
         message = star.name
     else
         message = "Unexplored"
     end
-    love.graphics.print(message, width / 2 - (bigfont:getWidth(message)/2), 10)
+    pingraph.print(message, width / 2 - (bigfont:getWidth(message)/2), 10)
 
     if game.myship.loc == star.id then
-        love.graphics.setColor(1,1,1)
-        love.graphics.draw(game.myship.image, 200, 700)
+        pingraph.setColor(1,1,1)
+        pingraph.draw(game.myship.image, 200, 700)
     end
     
 end

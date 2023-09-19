@@ -14,7 +14,7 @@ function dashedLine(x1, y1, x2, y2)
   
     for iStep = 0, len do -- including first and last points
       if iStep % 8 > 3 then
-        love.graphics.points(x1 + deltaX * iStep/len, y1 + deltaY * iStep/len)
+        pingraph.points(x1 + deltaX * iStep/len, y1 + deltaY * iStep/len)
       end
     end
 end

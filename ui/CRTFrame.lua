@@ -26,18 +26,18 @@ end
 
 function CRTFrame:draw(scene)
     if self.active then
-        love.graphics.setColor(self.borderColor)
-        love.graphics.setLineWidth(3)
-        love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
-        love.graphics.setScissor(self.x, self.y, self.width, self.height)
+        pingraph.setColor(self.borderColor)
+        pingraph.setLineWidth(3)
+        pingraph.rectangle("line", self.x, self.y, self.width, self.height)
+        pingraph.setScissor(self.x, self.y, self.width, self.height)
         local pixelSize = 5
         for j = 1, self.height, pixelSize do
             for i = 1, self.width, pixelSize do
                 local g = math.random() * (self.on and .1 or .5)
                 if (self.on) then
-                    love.graphics.setColor(self.backgroundColor(g))
+                    pingraph.setColor(self.backgroundColor(g))
                 else
-                    love.graphics.setColor(g,g,g)
+                    pingraph.setColor(g,g,g)
                 end
                 self:rectangle("fill", i, j, pixelSize, pixelSize)
             end
@@ -45,17 +45,17 @@ function CRTFrame:draw(scene)
         if self.on then
             self:render(scene)
         end
-        love.graphics.setScissor()
+        pingraph.setScissor()
     end
 end
 
 function CRTFrame:setBrightness(x) 
     if self.mode == "heliotrope" then
-        love.graphics.setColor(x, 0, x)
+        pingraph.setColor(x, 0, x)
     elseif self.mode == "amber" then
-        love.graphics.setColor(x, x * .75, 0)
+        pingraph.setColor(x, x * .75, 0)
     else
-        love.graphics.setColor(0, x, 0)
+        pingraph.setColor(0, x, 0)
     end
 end
 

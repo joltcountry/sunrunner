@@ -6,7 +6,7 @@ LeftFrame = CRTFrame:new(15, 74, 25 * 9/16, 25)
 
 function LeftFrame:render(scene)
     self:setBrightness(.8)
-    love.graphics.setFont(mediumfont)
+    pingraph.setFont(mediumfont)
     self:printCentered("TBD", self.height / 2)
 end
 
@@ -15,7 +15,7 @@ ShipFrame = CRTFrame:new(30, 90, 40, 9)
 ShipFrame.on = true
 
 function ShipFrame:render(scene)
-    love.graphics.setFont(smallfont)
+    pingraph.setFont(smallfont)
     self:setBrightness(1)
     self:print("Location:", 5, 2)
     self:print("Warp range:", 5, 22)
@@ -57,7 +57,7 @@ end
 function RadarFrame:render(scene)
     local stars = galaxy:starsInRange(game.myship.scanningRange, galaxy:xy(game.myship.loc))
     local startX, startY = galaxy:xy(game.myship.loc)
-    love.graphics.setFont(smallfont)
+    pingraph.setFont(smallfont)
     for i,v in pairs(stars) do
         local dist = galaxy:getDistance(game.myship.loc, i)
         local endX, endY = galaxy:xy(i)
@@ -66,7 +66,7 @@ function RadarFrame:render(scene)
         local y = self.height / 2 - math.cos(math.rad(dir)) * dist * radarZoom
         if game.myship.route and #game.myship.route > 1 and i == game.myship.route[2] then
             self:setBrightness(.3)
-            love.graphics.setLineWidth(1)
+            pingraph.setLineWidth(1)
             self:line(self.width / 2, self.height / 2, x, y)
             if blink then
                 self:setBrightness(1)

@@ -3,6 +3,7 @@ require "scenes.solar"
 require "scenes.warp"
 require "obj.ship"
 require "ui.autopilotButton"
+require "pingraph"
 
 local scenes = {
     galaxy = GalaxyScene,
@@ -13,6 +14,11 @@ local scenes = {
 function setResolution(w, h)
     width = w
     height = h
+    game.scale = w / 1600
+    bigfont = pingraph.newFont(36 * game.scale)
+    smallfont = pingraph.newFont(12 * game.scale)
+    mediumfont = pingraph.newFont(24 * game.scale)
+    print(game.scale)
     for _,v in pairs(scenes) do
         if v.ui then
             for _,uiComponent in pairs(v.ui) do
@@ -35,21 +41,18 @@ end
 
 function love.load()
 
-    game = { credits = 1000 }
+    game = { credits = 1000, scale = .5 }
     planetImages = {}
     for i = 1,10 do
-        planetImages[i] = love.graphics.newImage("assets/images/planets/planet" .. i .. ".png")
+        planetImages[i] = pingraph.newImage("assets/images/planets/planet" .. i .. ".png")
     end
-    logo = love.graphics.newImage("assets/images/logo.png")
+    logo = pingraph.newImage("assets/images/logo.png")
 
     local seedTime = os.time()
     print("seed: " .. seedTime)
     math.randomseed(seedTime)
-    setResolution(1600, 900)
+    setResolution(1600,900)
     setMode("amber")
-    bigfont = love.graphics.newFont(36)
-    smallfont = love.graphics.newFont(12)
-    mediumfont = love.graphics.newFont(24)
     zoom = 10
     lastClick = 0
     clickInterval = .2
@@ -85,8 +88,8 @@ function love.draw()
         end
     end
 
-    love.graphics.setColor(1,1,1)
-    love.graphics.draw(logo, 1, 1, 0, .4)
+    pingraph.setColor(1,1,1)
+    pingraph.draw(logo, 1, 1, 0, .4)
 end
 
 function love.wheelmoved(x, y)

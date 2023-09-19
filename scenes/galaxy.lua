@@ -50,7 +50,7 @@ function GalaxyScene:update(dt, hasMouse)
         v.y = -math.cos(math.rad(v.dir)) * v.dist
         local screenX = galaxyx + v.x * zoom
         local screenY = galaxyy + v.y * zoom
-        if screenX > 0 - width / 2 and screenX < width + width/2 and screenY > 0 - height/2 and screenY < height + height/2 then
+        if screenX > 0 - width and screenX < width + width and screenY > 0 - height and screenY < height + height then
             displayed[i] = v
         end
 
@@ -111,55 +111,55 @@ function GalaxyScene:draw()
         { dist = game.myship.travelRange, fillColor = {0,.1,0}, lineColor = {0,.4,0} }
     }
     table.sort(ranges, function (c1, c2) return c1.dist > c2.dist end )
-    love.graphics.setLineWidth(1)
+    pingraph.setLineWidth(1)
     for _,v in pairs(ranges) do
-        love.graphics.setColor(v.fillColor)
-        love.graphics.circle("fill", shipScreenX, shipScreenY, v.dist * zoom);
-        love.graphics.setColor(v.lineColor)
-        love.graphics.circle("line", shipScreenX, shipScreenY, v.dist * zoom);
+        pingraph.setColor(v.fillColor)
+        pingraph.circle("fill", shipScreenX, shipScreenY, v.dist * zoom);
+        pingraph.setColor(v.lineColor)
+        pingraph.circle("line", shipScreenX, shipScreenY, v.dist * zoom);
     end
 
     for i,v in pairs(displayed) do
         local size = 1 + zoom * .2
         local screenX = galaxyx + v.x * zoom
         local screenY = galaxyy + v.y * zoom
-        love.graphics.setFont(smallfont)
-        love.graphics.setColor(.8, .8, .8)
+        pingraph.setFont(smallfont)
+        pingraph.setColor(.8, .8, .8)
     
         -- Show selections or hover indications
-        love.graphics.setLineWidth(1);
+        pingraph.setLineWidth(1);
         if self.state.hovered == i then
-            love.graphics.setFont(smallfont)
-            love.graphics.setColor(.5, 1, .5)
+            pingraph.setFont(smallfont)
+            pingraph.setColor(.5, 1, .5)
             if v.built and zoom > 5 then 
-                love.graphics.print(galaxy.stars[i].name, screenX-smallfont:getWidth(galaxy.stars[i].name) / 2, screenY+.8*zoom)
+                pingraph.print(galaxy.stars[i].name, screenX-smallfont:getWidth(galaxy.stars[i].name) / 2, screenY+.8*zoom)
             end
-            love.graphics.circle('line', screenX, screenY, galaxy.spacing * zoom)                
+            pingraph.circle('line', screenX, screenY, galaxy.spacing * zoom)                
         elseif v.built and zoom > 5 then 
  --       else
-            love.graphics.print(galaxy.stars[i].name, screenX-smallfont:getWidth(galaxy.stars[i].name) / 2, screenY+.8*zoom)
- --love.graphics.print(i, screenX, screenY+9)
+            pingraph.print(galaxy.stars[i].name, screenX-smallfont:getWidth(galaxy.stars[i].name) / 2, screenY+.8*zoom)
+ --pingraph.print(i, screenX, screenY+9)
         end
     
         -- Draw possible travel routes
         if inRange[i] then
             if self.state.hovered == i then
-                love.graphics.setLineWidth(1);
-                love.graphics.setColor(math.random(), math.random(), 1)
-                love.graphics.line(screenX, screenY, shipScreenX, shipScreenY)
+                pingraph.setLineWidth(1);
+                pingraph.setColor(math.random(), math.random(), 1)
+                pingraph.line(screenX, screenY, shipScreenX, shipScreenY)
             end
         end
 
         -- Draw ship
         if game.myship.loc == i then
-            love.graphics.setColor(1,1,1)
-            love.graphics.draw(game.myship.image, screenX+2, screenY-2*zoom, 0, zoom / 50)
+            pingraph.setColor(1,1,1)
+            pingraph.draw(game.myship.image, screenX+2, screenY-2*zoom, 0, zoom / 50)
         end
 
         -- Render the actual star
         for rings = 0, 1, .1 do
-            love.graphics.setColor(v.color1[1] + rings - math.random() * .7, v.color1[2] + rings - math.random() * .7, v.color1[3] + rings - math.random() * .7)
-            love.graphics.circle('fill', screenX, screenY, math.max(1, 1 * zoom/(2 + rings)))
+            pingraph.setColor(v.color1[1] + rings - math.random() * .7, v.color1[2] + rings - math.random() * .7, v.color1[3] + rings - math.random() * .7)
+            pingraph.circle('fill', screenX, screenY, math.max(1, 1 * zoom/(2 + rings)))
         end
 
     end
@@ -167,20 +167,20 @@ function GalaxyScene:draw()
     if game.myship.route then
         if #game.myship.route > 1 then
             -- draw plotted route
-            love.graphics.setLineWidth(1);
-            love.graphics.setColor(math.random(), math.random(), 1)
+            pingraph.setLineWidth(1);
+            pingraph.setColor(math.random(), math.random(), 1)
 
             for node = 1, #game.myship.route - 1 do
                 fromX = galaxyx + galaxy.stars[game.myship.route[node]].x * zoom
                 fromY = galaxyy + galaxy.stars[game.myship.route[node]].y * zoom
                 toX = galaxyx + galaxy.stars[game.myship.route[node+1]].x * zoom
                 toY = galaxyy + galaxy.stars[game.myship.route[node+1]].y * zoom
-                love.graphics.line(fromX, fromY, toX, toY)
+                pingraph.line(fromX, fromY, toX, toY)
             end
         else
             failedX, failedY = galaxy:screenPos(game.myship.route[1])
-            love.graphics.setColor(.7, 0, 0)
-            love.graphics.circle('line', failedX, failedY, galaxy.spacing * zoom)
+            pingraph.setColor(.7, 0, 0)
+            pingraph.circle('line', failedX, failedY, galaxy.spacing * zoom)
         end
     end
     
@@ -189,11 +189,11 @@ function GalaxyScene:draw()
     enhancer = math.random()
     
     for i = rings, 1, -1 do
-        love.graphics.setColor(enhancer * (1-i/rings), 1-i/rings,enhancer * (1-i/rings))
-        love.graphics.circle('fill', galaxyx, galaxyy, sunsize * zoom + i)
+        pingraph.setColor(enhancer * (1-i/rings), 1-i/rings,enhancer * (1-i/rings))
+        pingraph.circle('fill', galaxyx, galaxyy, sunsize * zoom + i)
     end
-    love.graphics.setColor(0,0,0)
-    love.graphics.circle('fill', galaxyx, galaxyy, sunsize * zoom)
+    pingraph.setColor(0,0,0)
+    pingraph.circle('fill', galaxyx, galaxyy, sunsize * zoom)
 
 end
 
